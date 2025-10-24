@@ -14,7 +14,7 @@ export default function Footer() {
       <div className="md:w-[19.75rem]">
         <p className="text-[1.125rem] font-medium text-white">
         </p><h1 className="text-white font-extrabold">
-          <span className="text-black">SMARTCARE</span>BRACELET
+          <span className="text-black">LINKIO</span>BRACELET
         </h1>
         <p />
         <p className="mt-[1.125rem] text-[.9375rem] font-normal text-white/[80%]">SmartCare Bracelet is designed to support your health every day — reminding you to take your medications, tracking vital signs, and keeping loved ones informed in real time.</p>
