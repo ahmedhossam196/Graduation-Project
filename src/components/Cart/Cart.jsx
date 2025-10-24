@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import bracelet from "../../assets/bracelet.jpg";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-// import cartIcon from '../../assets/cart-empty.png';
+import cartIcon from "../../assets/cart-empty.png";
 
 export default function CartSection() {
   const [items, setItems] = useState([
@@ -45,7 +45,7 @@ export default function CartSection() {
       <div className="w-full max-w-5xl">
         {items.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 text-center shadow-lg flex flex-col items-center">
-            {/* <img src={cartIcon} alt="empty cart" className="w-32 mb-6" /> */}
+            <img src={cartIcon} alt="empty cart" className="w-40 mb-6" />
             <h2 className="text-2xl font-semibold mb-2 text-gray-800">
               Your cart is empty
             </h2>
