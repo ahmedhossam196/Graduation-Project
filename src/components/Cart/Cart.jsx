@@ -37,16 +37,20 @@ export default function CartSection() {
   const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);
 
   return (
-    <section className="min-h-screen bg-[#f5f5f5] flex flex-col items-center py-12 px-4 md:px-12">
-      <h1 className="text-[#009DDC] text-4xl md:text-5xl font-extrabold mb-8 tracking-tight">
+    <section className="min-h-screen bg-[#f5f5f5] flex flex-col items-center py-6 px-4 sm:px-12">
+      <h1 className="text-[#009DDC] text-3xl sm:text-5xl font-extrabold mb-6 sm:mb-8 tracking-tight">
         Your Cart
       </h1>
 
       <div className="w-full max-w-5xl">
         {items.length === 0 ? (
-          <div className="bg-white rounded-3xl p-12 text-center shadow-lg flex flex-col items-center">
-            <img src={cartIcon} alt="empty cart" className="w-40 mb-6" />
-            <h2 className="text-2xl font-semibold mb-2 text-gray-800">
+          <div className="bg-white rounded-3xl p-10 text-center shadow-lg flex flex-col items-center">
+            <img
+              src={cartIcon}
+              alt="empty cart"
+              className="w-32 sm:w-40 mb-6"
+            />
+            <h2 className="text-xl sm:text-2xl font-semibold mb-2 text-gray-800">
               Your cart is empty
             </h2>
             <p className="opacity-90 mb-6 max-w-sm text-gray-600">
@@ -54,33 +58,36 @@ export default function CartSection() {
             </p>
             <Link
               to="/products"
-              className="inline-block bg-[#009DDC] text-white px-6 py-3 rounded-xl font-bold shadow hover:scale-[1.02] transition"
+              className="inline-block bg-[#009DDC] text-white px-5 py-3 rounded-xl font-bold shadow hover:scale-[1.02] transition"
             >
               Browse Products
             </Link>
           </div>
         ) : (
-          <div className="bg-white rounded-3xl p-6 shadow-2xl">
+          <div className="bg-white rounded-3xl p-4 sm:p-6 shadow-2xl">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* LEFT (CART ITEMS) */}
               <div className="md:col-span-2 flex flex-col gap-4">
                 {items.map((item) => (
                   <article
                     key={item.id}
-                    className="flex items-center justify-between bg-white rounded-2xl p-6 hover:shadow-2xl transition-all"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between bg-white rounded-2xl p-4 sm:p-6 hover:shadow-2xl transition-all"
                   >
-                    <div className="flex items-center gap-5">
-                      <div className="w-24 h-24 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-400 font-semibold overflow-hidden">
+                    {/* IMAGE + DETAILS */}
+                    <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 w-full sm:w-auto">
+                      <div className="w-full sm:w-24 h-32 sm:h-24 bg-gray-100 rounded-2xl flex items-center justify-center overflow-hidden">
                         {item.img ? (
                           <img
                             src={item.img}
-                            className="rounded-2xl object-cover w-full h-full"
+                            className="object-cover w-full h-full rounded-2xl"
                             alt={item.title}
                           />
                         ) : (
                           <span>No Image</span>
                         )}
                       </div>
-                      <div>
+
+                      <div className="text-center sm:text-left">
                         <h3 className="text-gray-800 text-lg font-semibold mb-1">
                           {item.title}
                         </h3>
@@ -93,13 +100,14 @@ export default function CartSection() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    {/* QTY + REMOVE */}
+                    <div className="flex flex-col sm:flex-row items-center gap-4 mt-4 sm:mt-0">
                       <div className="flex items-center bg-gray-100 rounded-lg overflow-hidden">
                         <button
                           onClick={() => decrease(item.id)}
                           className="px-4 py-2 cursor-pointer hover:bg-gray-200 transition"
                         >
-                          <i class="fa-solid fa-minus"></i>
+                          <i className="fa-solid fa-minus"></i>
                         </button>
                         <div className="px-5 py-2 font-semibold text-gray-800">
                           {item.qty}
@@ -108,7 +116,7 @@ export default function CartSection() {
                           onClick={() => increase(item.id)}
                           className="px-4 py-2 cursor-pointer hover:bg-gray-200 transition"
                         >
-                          <i class="fa-solid fa-plus"></i>
+                          <i className="fa-solid fa-plus"></i>
                         </button>
                       </div>
 
@@ -118,7 +126,7 @@ export default function CartSection() {
 
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="px-4 py-2 cursor-pointer bg-red-600 rounded-lg text-white hover:bg-red-700 transition"
+                        className="px-4 py-2 bg-red-600 rounded-lg text-white hover:bg-red-700 transition w-full sm:w-auto"
                       >
                         Remove
                       </button>
@@ -127,6 +135,7 @@ export default function CartSection() {
                 ))}
               </div>
 
+              {/* RIGHT (SUMMARY) */}
               <aside className="md:col-span-1 bg-white rounded-2xl p-6 flex flex-col justify-between shadow-md">
                 <div>
                   <h4 className="text-gray-800 text-xl font-bold mb-3">
