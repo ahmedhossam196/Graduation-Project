@@ -1,6 +1,7 @@
 import React from 'react'
 import style from "./Login.module.css"
 import loginpic from "../../assets/LoginImage.png"
+import { Link } from 'react-router-dom';
 export default function Login() {
   return (
    <>
@@ -49,7 +50,7 @@ export default function Login() {
             <button type="button" className="w-full shadow-xl py-2.5 px-4 text-[15px] font-medium tracking-wide rounded-lg text-white bg-[#009DDC] hover:bg-blue-700 focus:outline-none cursor-pointer">
               Sign in
             </button>
-            <p className="text-sm !mt-6 text-center text-slate-600">Don't have an account <a href="javascript:void(0);" className="text-[#009DDC] font-medium hover:underline ml-1 whitespace-nowrap">Register here</a></p>
+            <p className="text-sm !mt-6 text-center text-slate-600">Don't have an account <Link to="/register" className="text-[#009DDC] font-medium hover:underline ml-1 whitespace-nowrap">Register here</Link></p>
           </div>
         </form>
       </div>
