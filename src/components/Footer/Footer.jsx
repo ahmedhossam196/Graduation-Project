@@ -8,13 +8,13 @@ import { Link } from 'react-router-dom';
 export default function Footer() {
   return (
 <>
-<div className=" bottom-0 left-0 w-full bg-[#009DDC] pt-9 z-50">
+<div className=" bottom-0 left-0 w-full bg-[#009DDC]  dark:bg-gray-800 pt-9 z-50">
   <div className="mx-auto w-full max-w-[72.875rem] px-4 xl:px-0">
     <div className="flex flex-col justify-between sm:px-[1.125rem] md:flex-row md:px-10">
       <div className="md:w-[19.75rem]">
         <p className="text-[1.125rem] font-medium text-white">
         </p><h1 className="text-white font-extrabold">
-          <span className="text-black">LINKO</span>BRACELET
+          <span className="text-black dark:text-[#009DDC]">LINKO</span>BRACELET
         </h1>
         <p />
         <p className="mt-[1.125rem] text-[.9375rem] font-normal text-white/[80%]">LINKO Bracelet is designed to support your health every day — reminding you to take your medications, tracking vital signs, and keeping loved ones informed in real time.</p>

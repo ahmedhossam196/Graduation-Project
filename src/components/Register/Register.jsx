@@ -68,9 +68,9 @@ export default function Register() {
   }
 
   return (
-    <>
-      <div className="max-w-4xl max-sm:max-w-lg mx-auto p-6 mt-6">
-        <div className="text-center  sm:mb-16">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      <div className="max-w-4xl max-sm:max-w-lg mx-auto p-6">
+        <div className="text-center sm:mb-16">
           <Link to="/">
             <img
               src={Com}
@@ -78,17 +78,20 @@ export default function Register() {
               className="mt-[-20px] w-35 inline-block top-3"
             />
           </Link>
-          <h4 className="text-slate-600 text-base mt-2">
+          <h4 className="text-slate-600 font-bold dark:text-gray-300 text-base mt-2">
             Sign up into your account
           </h4>
         </div>
-        <form className="mt-[-40px]" onSubmit={handleSubmit(handleRegister)}>
+        <form
+          className="mt-[-40px]"
+          onSubmit={handleSubmit(handleRegister)}
+        >
           <div className="grid sm:grid-cols-2 gap-8">
             {/* First Name */}
             <div>
               <label
                 htmlFor="firstName"
-                className="text-slate-900 text-sm font-medium mb-2 block"
+                className="text-slate-900 dark:text-gray-200 text-sm font-medium mb-2 block"
               >
                 First Name
               </label>
@@ -97,7 +100,7 @@ export default function Register() {
                 id="firstName"
                 {...register("firstName")}
                 type="text"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                className="bg-slate-100 dark:bg-gray-800 dark:text-gray-200 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
                 placeholder="Enter name"
               />
               {formState.errors.firstName &&
@@ -114,7 +117,7 @@ export default function Register() {
             <div>
               <label
                 htmlFor="lastName"
-                className="text-slate-900 text-sm font-medium mb-2 block"
+                className="text-slate-900 dark:text-gray-200 text-sm font-medium mb-2 block"
               >
                 Last Name
               </label>
@@ -122,7 +125,7 @@ export default function Register() {
                 id="lastName"
                 {...register("lastName")}
                 type="text"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                className="bg-slate-100 dark:bg-gray-800 dark:text-gray-200 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
                 placeholder="Enter last name"
               />
               {formState.errors.lastName && formState.touchedFields.lastName ? (
@@ -138,7 +141,7 @@ export default function Register() {
             <div>
               <label
                 htmlFor="email"
-                className="text-slate-900 text-sm font-medium mb-2 block"
+                className="text-slate-900 dark:text-gray-200 text-sm font-medium mb-2 block"
               >
                 Email Id
               </label>
@@ -146,7 +149,7 @@ export default function Register() {
                 id="email"
                 {...register("email")}
                 type="email"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                className="bg-slate-100 dark:bg-gray-800 dark:text-gray-200 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
                 placeholder="Enter email"
               />
               {formState.errors.email && formState.touchedFields.email ? (
@@ -162,7 +165,7 @@ export default function Register() {
             <div>
               <label
                 htmlFor="phoneNumber"
-                className="text-slate-900 text-sm font-medium mb-2 block"
+                className="text-slate-900 dark:text-gray-200 text-sm font-medium mb-2 block"
               >
                 Mobile No.
               </label>
@@ -170,7 +173,7 @@ export default function Register() {
                 id="phoneNumber"
                 {...register("phoneNumber")}
                 type="text"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                className="bg-slate-100 dark:bg-gray-800 dark:text-gray-200 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
                 placeholder="Enter mobile number"
               />
               {formState.errors.phoneNumber &&
@@ -187,7 +190,7 @@ export default function Register() {
             <div>
               <label
                 htmlFor="password"
-                className="text-slate-900 text-sm font-medium mb-2 block"
+                className="text-slate-900 dark:text-gray-200 text-sm font-medium mb-2 block"
               >
                 Password
               </label>
@@ -195,7 +198,7 @@ export default function Register() {
                 id="password"
                 {...register("password")}
                 type="password"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                className="bg-slate-100 dark:bg-gray-800 dark:text-gray-200 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
                 placeholder="Enter password"
               />
               {formState.errors.password && formState.touchedFields.password ? (
@@ -211,7 +214,7 @@ export default function Register() {
             <div>
               <label
                 htmlFor="dateOfBirth"
-                className="text-slate-900 text-sm font-medium mb-2 block"
+                className="text-slate-900 dark:text-gray-200 text-sm font-medium mb-2 block"
               >
                 BirthDay
               </label>
@@ -219,7 +222,7 @@ export default function Register() {
                 id="dateOfBirth"
                 {...register("dateOfBirth")}
                 type="date"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                className="bg-slate-100 dark:bg-gray-800 dark:text-gray-200 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
               />
               {formState.errors.dateOfBirth &&
               formState.touchedFields.dateOfBirth ? (
@@ -235,21 +238,20 @@ export default function Register() {
             <div className="sm:col-span-2">
               <label
                 htmlFor="gender"
-                className="text-slate-900 text-sm font-medium mb-2 block"
+                className="text-slate-900 dark:text-gray-200 text-sm font-medium mb-2 block"
               >
                 Gender
               </label>
               <select
                 id="gender"
                 {...register("gender")}
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                className="bg-slate-100 dark:bg-gray-800 dark:text-gray-200 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
               >
                 <option value="" disabled hidden>
                   Select gender
                 </option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
-                {/* <option value="Other">Other</option> */}
               </select>
               {formState.errors.gender && formState.touchedFields.gender ? (
                 <p className="text-red-500 font-semibold text-center my-2">
@@ -272,6 +274,6 @@ export default function Register() {
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 }
