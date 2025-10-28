@@ -153,13 +153,13 @@ export default function CartSection() {
                 <div>
                   <button
                     onClick={() => setShowCheckout(true)}
-                    className="w-full bg-[#009DDC] text-white py-3 rounded-2xl font-bold shadow hover:scale-[1.01] transition mb-3"
+                    className="w-full bg-[#009DDC] cursor-pointer text-white py-3 rounded-2xl font-bold shadow hover:scale-[1.01] transition mb-3"
                   >
                     Proceed to Checkout
                   </button>
                   <button
                     onClick={() => setItems([])}
-                    className="w-full border border-gray-200 dark:border-gray-600 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                    className="w-full border cursor-pointer border-gray-200 dark:border-gray-600 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                   >
                     Clear Cart
                   </button>
@@ -228,14 +228,14 @@ export default function CartSection() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-[#009DDC] text-white py-3 rounded-2xl font-bold shadow hover:scale-[1.01] transition"
+                className="w-full bg-[#009DDC] cursor-pointer text-white py-3 rounded-2xl font-bold shadow hover:scale-[1.01] transition"
               >
                 Confirm Order
               </button>
               <button
                 type="button"
                 onClick={() => setShowCheckout(false)}
-                className="w-full border border-gray-300 dark:border-gray-600 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                className="w-full border cursor-pointer border-gray-300 dark:border-gray-600 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
                 Cancel
               </button>
