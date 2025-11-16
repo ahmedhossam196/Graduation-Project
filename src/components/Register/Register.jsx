@@ -1,15 +1,21 @@
 import React from 'react'
 import style from "./Register.module.css"
 import Com from "../../assets/Smartcare.com.png"
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import z from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-
+import { useState } from 'react';
+useNavigate
 
 
 export default function Register() {
+  const [apiSuccessed, setapiSuccessed] = useState("")
+  const navigate = useNavigate();
+const [apiError, setapiError] = useState("");
+const [isLoading, setisLoading] = useState(false);
+
 
 const schema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -42,8 +48,6 @@ const schema = z.object({
 });
 
 
-
-
 const form = useForm({
 defaultValues:{
 firstName: "",
@@ -61,25 +65,47 @@ let {register , handleSubmit , formState} = form;
 
 function handleRegister(data){
   console.log(data);
+  setisLoading(true)
   axios.post(`http://smartbracelet.runasp.net/api/auth/signup`, data).then((res)=>{
     console.log(res);
+  if (res.data.message === "Account created successfully") {
+    setisLoading(false)
+    setapiError(false);
+  setapiSuccessed("Account created successfully ✔");
+
+  setTimeout(() => {
+    navigate("/login");
+  }, 2000);
+}
+
   }).catch((err)=>{
+    setisLoading(false)
     console.log(err);
+setapiError("User Already Exists");
+ 
   })
   
 
-}
+} 
 
   return (
    <>
    <div className="max-w-4xl max-sm:max-w-lg mx-auto p-6 mt-6">
   <div className="text-center  sm:mb-16">
-    <Link to="/"><img src={Com} alt="logo" className="mt-[-20px] w-35 inline-block top-3" />
+    <Link to="/"><img src={Com} alt="logo" className="mt-[-1.25rem] w-35 inline-block top-3" />
     </Link>
     <h4 className="text-slate-600 text-base mt-2">Sign up into your account</h4>
   </div>
-  <form className='mt-[-40px]' onSubmit={handleSubmit(handleRegister)}  >
+  <form className='mt-[-2.5rem]' onSubmit={handleSubmit(handleRegister)}  >
+    
+    {apiSuccessed && (
+  <h1 className="text-center bg-green-500 text-white rounded-md my-2 p-2 font-bold">
+    {apiSuccessed}
+  </h1>
+)}
+    {apiError && <h1 className='text-center bg-red-600 text-white rounded-md my-2 p-2 font-bold'>{apiError }</h1>}
   <div className="grid sm:grid-cols-2 gap-8">
+    
     {/* First Name */}
     <div>
       <label htmlFor="firstName" className="text-slate-900 text-sm font-medium mb-2 block">
@@ -115,7 +141,7 @@ function handleRegister(data){
     {/* Email */}
     <div>
       <label htmlFor="email" className="text-slate-900 text-sm font-medium mb-2 block">
-        Email Id
+        Email
       </label>
       <input
         id="email"
@@ -199,10 +225,11 @@ function handleRegister(data){
   {/* Submit Button */}
   <div className="mt-12">
     <button
+    disabled={isLoading}
       type="submit"
       className="mx-auto block min-w-32 py-2 px-6 text-md font-medium tracking-wider rounded-md text-white bg-[#009DDC] hover:bg-blue-700 focus:outline-none cursor-pointer"
     >
-      Sign up
+      {isLoading ? <i className='fas fa-spinner fa-spin text-white'></i> :"Sign Up"}
     </button>
   </div>
 </form>

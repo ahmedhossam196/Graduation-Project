@@ -12,30 +12,43 @@ import Notfound from "./components/Notfound/Notfound";
 import Map from "./components/Map/Map";
 import Home from "./components/Home/Home";
 import Profile from "./components/Profile/Profile";
+import UserContextProvider from "./Context/UserContext";
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 const x = createBrowserRouter([
   {
     path: "",
     element: <Layout />,
     children: [
-      { path: "/", element: <Home /> },
+      { index: true, element:<ProtectedRoute>
+        <Home/>
+      </ProtectedRoute>},
       { path: "login", element: <Login /> },
       { path: "Register", element: <Register /> },
-      { path: "Products", element: <Products /> },
-      { path: "cart", element: <Cart /> },
-      { path: "map", element: <Map /> },
-      { path: "profile", element: <Profile /> },
+      { path: "Products", element:<ProtectedRoute>
+        <Products/>
+      </ProtectedRoute>},
+      { path: "cart", element:<ProtectedRoute>
+        <Cart/>
+      </ProtectedRoute>},
+      { path: "map", element:<ProtectedRoute>
+        <Map/>
+      </ProtectedRoute>},
+      { path: "profile", element:<ProtectedRoute>
+        <Profile/>
+      </ProtectedRoute>},
       { path: "*", element: <Notfound /> },
     ],
   },
 ]);
 
 function App() {
-  const [count, setCount] = useState(0);
 
   return (
     <>
+    <UserContextProvider>
       <RouterProvider router={x}></RouterProvider>
+      </UserContextProvider>
     </>
   );
 }
