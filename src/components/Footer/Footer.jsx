@@ -14,10 +14,10 @@ export default function Footer() {
       <div className="md:w-[19.75rem]">
         <p className="text-[1.125rem] font-medium text-white">
         </p><h1 className="text-white font-extrabold">
-          <span className="text-black">SMARTCARE</span>BRACELET
+          <span className="text-black">LINKO</span>BRACELET
         </h1>
         <p />
-        <p className="mt-[1.125rem] text-[.9375rem] font-normal text-white/[80%]">SmartCare Bracelet is designed to support your health every day — reminding you to take your medications, tracking vital signs, and keeping loved ones informed in real time.</p>
+        <p className="mt-[1.125rem] text-[.9375rem] font-normal text-white/[80%]">LINKO Bracelet is designed to support your health every day — reminding you to take your medications, tracking vital signs, and keeping loved ones informed in real time.</p>
         <div className="mt-[1.125rem] flex gap-4">
 <div className="flex gap-4">
   <Link className="hover:scale-110" target="_blank" to="https://www.facebook.com/">
@@ -57,7 +57,7 @@ export default function Footer() {
             </svg>
           </div>
           <div className="ml-[1.125rem]">
-            <Link to="mailto:help@lorem.com" className="font-Inter text-[.875rem] font-medium text-[#fff]">SmartcareBracelet@gmail.com</Link>
+            <Link to="mailto:help@lorem.com" className="font-Inter text-[.875rem] font-medium text-[#fff]">LinkoBracelet@gmail.com</Link>
             <p className="font-Inter text-[.75rem] font-medium text-[#fff]">Support Email</p>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default function Footer() {
     <div className="flex items-center justify-center pb-8 pt-[.5625rem] md:py-8">
       <p className="text-[.625rem] font-normal text-white md:text-[.75rem]">
         © Copyright
-        {/* */}2024
+        {/* */}2025
         {/* */}, All Rights Reserved by YOUR WEBSITES. PVT. LTD
       </p>
     </div>
