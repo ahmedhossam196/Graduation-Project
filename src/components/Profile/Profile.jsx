@@ -6,10 +6,10 @@ export default function Profile() {
 
   // Mock user data
   const userData = {
-    name: "Sarah Johnson",
-    email: "sarah.johnson@email.com",
-    phone: "+1 (555) 123-4567",
-    address: "123 Main Street, Apt 4B, San Francisco, CA 94102, United States",
+    name: "Mohammed Ibrahim",
+    email: "MohammedIbrahim@gmail.com",
+    phone: "+201111111111",
+    address: "6th of October - Media Production City - Gate 4 - International Academy for Engineering and Media Sciences",
   }
 
   const handleLogout = () => {

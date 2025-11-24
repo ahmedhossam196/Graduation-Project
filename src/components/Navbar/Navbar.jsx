@@ -34,7 +34,7 @@ export default function Navbar() {
                 { name: "Home", to: "/" },
                 { name: "Products", to: "/products" },
                 { name: "Cart", to: "/cart" },
-                { name: "Map", to: "/map" },
+                // { name: "Map", to: "/map" },
               ].map((link) => (
                 <li key={link.to}>
                   <NavLink

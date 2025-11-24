@@ -95,7 +95,7 @@ export default function Home() {
       </section>
 
       {/* Featured Products */}
-      <section className="max-w-6xl mx-auto px-4 py-16">
+      {/* <section className="max-w-6xl mx-auto px-4 py-16">
         <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-10 text-center">
           Featured Products
         </h2>
@@ -118,5 +118,8 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section>
-    </div>)}
+      </section> */}
+    </div>)
+    }
+
+    

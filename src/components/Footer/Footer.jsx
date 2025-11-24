@@ -46,7 +46,7 @@ export default function Footer() {
             </svg>
           </div>
           <div className="ml-[1.125rem]">
-            <Link to="tel:+911800123444" className="font-Inter text-[.875rem] font-medium text-white">+91 1800123444</Link>
+            <Link to="tel:+911800123444" className="font-Inter text-[.875rem] font-medium text-white">+201111111111</Link>
             <p className="font-Inter text-[.75rem] font-medium text-white">Support Number</p>
           </div>
         </div>
