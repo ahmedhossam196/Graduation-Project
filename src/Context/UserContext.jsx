@@ -12,10 +12,10 @@ export default function UserContextProvider(props) {
   // } , [])
 
   const [userLogin, setuserLogin] = useState(localStorage.getItem("userToken"));
-  const [userID, setuserID] = useState(null);
+  // const [userID, setuserID] = useState(null);
   return (
     <UserContext.Provider
-      value={{ userLogin, setuserLogin, userID, setuserID }}
+      value={{ userLogin, setuserLogin,}}
     >
       {props.children}
     </UserContext.Provider>

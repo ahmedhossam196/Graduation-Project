@@ -7,7 +7,7 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useState } from "react";
-useNavigate;
+
 
 export default function Register() {
   const [apiSuccessed, setapiSuccessed] = useState("");
@@ -69,7 +69,7 @@ export default function Register() {
       .post(`http://smartbracelet.runasp.net/api/auth/signup`, data)
       .then((res) => {
         console.log(res);
-        if (res.data.message === "Account created successfully") {
+        if (res.data.message === "Success") {
           setisLoading(false);
           setapiError(false);
           setapiSuccessed("Account created successfully ✔");

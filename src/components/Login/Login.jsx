@@ -14,7 +14,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [apiError, setapiError] = useState("");
   const [isLoading, setisLoading] = useState(false);
-  let { userLogin, setuserLogin, setuserID, userID } = useContext(UserContext);
+  let { userLogin, setuserLogin, } = useContext(UserContext);
 
   const schema = z.object({
     email: z.string().email("Invalid email"),
@@ -43,14 +43,14 @@ export default function Login() {
       .post(`http://smartbracelet.runasp.net/api/auth/login`, data)
       .then((res) => {
         console.log(res);
-        if (res.data.message === "Logged in successfully") {
+        if (res.data.message === "Success") {
           setisLoading(false);
           setapiError(false);
           // setapiSuccessed("Account created successfully ✔");
           localStorage.setItem("userToken", res.data.data.token);
-          localStorage.setItem("userID", res.data.data.userID);
+          // localStorage.setItem("userID", res.data.data.userID);
           setuserLogin(res.data.data.token);
-          setuserID(res.data.data.userID);
+          // setuserID(res.data.data.userID);
           navigate("/");
         }
       })
