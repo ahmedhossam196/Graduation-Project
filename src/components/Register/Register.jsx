@@ -1,20 +1,18 @@
-import React from "react";
-import style from "./Register.module.css";
-import Com from "../../assets/Smartcare.com.png";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { useState } from "react";
-
+import Com from "../../assets/Smartcare.com.png";
 
 export default function Register() {
-  const [apiSuccessed, setapiSuccessed] = useState("");
+  const [apiSuccessed, setApiSuccessed] = useState("");
+  const [apiError, setApiError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [apiError, setapiError] = useState("");
-  const [isLoading, setisLoading] = useState(false);
 
+  // Validation Schema
   const schema = z.object({
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),
@@ -23,10 +21,10 @@ export default function Register() {
       .string()
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        "Must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character."
+        "Must contain 8 chars, uppercase, lowercase, number, special char."
       ),
     gender: z.enum(["Male", "Female"], {
-      message: "You have to choose the gender",
+      message: "You must choose your gender",
     }),
     dateOfBirth: z
       .string()
@@ -44,10 +42,11 @@ export default function Register() {
       .string()
       .regex(
         /^01[0-2,5]\d{8}$/,
-        "Invalid Egyptian phone number (must be 11 digits starting with 010, 011, 012, or 015)"
+        "Invalid Egyptian phone number (11 digits starting with 010/011/012/015)"
       ),
   });
 
+  // Form Hook
   const form = useForm({
     defaultValues: {
       firstName: "",
@@ -60,252 +59,213 @@ export default function Register() {
     },
     resolver: zodResolver(schema),
   });
-  let { register, handleSubmit, formState } = form;
 
+  const { register, handleSubmit, formState } = form;
+
+  // Dark Mode System Detection
+  useEffect(() => {
+    const checkDark = window.matchMedia("(prefers-color-scheme: dark)");
+    if (checkDark.matches) document.documentElement.classList.add("dark");
+
+    checkDark.addEventListener("change", (e) => {
+      if (e.matches) document.documentElement.classList.add("dark");
+      else document.documentElement.classList.remove("dark");
+    });
+  }, []);
+
+  // Submit Handler
   function handleRegister(data) {
-    console.log(data);
-    setisLoading(true);
+    setIsLoading(true);
+    setApiError("");
+    setApiSuccessed("");
+
     axios
-      .post(`http://smartbracelet.runasp.net/api/auth/signup`, data)
+      .post("http://smartbracelet.runasp.net/api/auth/signup", data)
       .then((res) => {
-        console.log(res);
         if (res.data.message === "Success") {
-          setisLoading(false);
-          setapiError(false);
-          setapiSuccessed("Account created successfully ✔");
+          setApiSuccessed("Account created successfully ✔");
 
           setTimeout(() => {
             navigate("/login");
-          }, 2000);
+          }, 1500);
         }
       })
-      .catch((err) => {
-        setisLoading(false);
-        console.log(err);
-        setapiError("User Already Exists");
-      });
+      .catch(() => {
+        setApiError("User Already Exists");
+      })
+      .finally(() => setIsLoading(false));
   }
 
   return (
-    <>
-      <div className="max-w-4xl max-sm:max-w-lg mx-auto p-6 mt-6">
-        <div className="text-center  sm:mb-16">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition p-6 flex justify-center items-center">
+      <div className="max-w-4xl w-full bg-white dark:bg-gray-800 rounded-3xl p-10 transition">
+        {/* Logo & Title */}
+        <div className="text-center mb-10">
           <Link to="/">
-            <img
-              src={Com}
-              alt="logo"
-              className="mt-[-1.25rem] w-35 inline-block top-3"
-            />
+            <img src={Com} alt="logo" className="w-40 mx-auto" />
           </Link>
-          <h4 className="text-slate-600 text-base mt-2">
-            Sign up into your account
+          <h4 className="text-gray-600 dark:text-gray-300 mt-2">
+            Create your SmartCare account
           </h4>
         </div>
-        <form className="mt-[-2.5rem]" onSubmit={handleSubmit(handleRegister)}>
-          {apiSuccessed && (
-            <h1 className="text-center bg-green-500 text-white rounded-md my-2 p-2 font-bold">
-              {apiSuccessed}
-            </h1>
-          )}
-          {apiError && (
-            <h1 className="text-center bg-red-600 text-white rounded-md my-2 p-2 font-bold">
-              {apiError}
-            </h1>
-          )}
-          <div className="grid sm:grid-cols-2 gap-8">
-            {/* First Name */}
-            <div>
-              <label
-                htmlFor="firstName"
-                className="text-slate-900 text-sm font-medium mb-2 block"
-              >
-                First Name
-              </label>
 
-              <input
-                id="firstName"
-                {...register("firstName")}
-                type="text"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-                placeholder="Enter name"
-              />
-              {formState.errors.firstName &&
-              formState.touchedFields.firstName ? (
-                <p className="text-red-500 font-semibold text-center my-2">
-                  {formState.errors.firstName.message}
-                </p>
-              ) : (
-                ""
-              )}
-            </div>
+        {/* Success / Error Messages */}
+        {apiSuccessed && (
+          <p className="bg-green-500 text-white p-3 rounded-xl mb-4 text-center font-semibold">
+            {apiSuccessed}
+          </p>
+        )}
 
-            {/* Last Name */}
-            <div>
-              <label
-                htmlFor="lastName"
-                className="text-slate-900 text-sm font-medium mb-2 block"
-              >
-                Last Name
-              </label>
-              <input
-                id="lastName"
-                {...register("lastName")}
-                type="text"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-                placeholder="Enter last name"
-              />
-              {formState.errors.lastName && formState.touchedFields.lastName ? (
-                <p className="text-red-500 font-semibold text-center my-2">
-                  {formState.errors.lastName.message}
-                </p>
-              ) : (
-                ""
-              )}
-            </div>
+        {apiError && (
+          <p className="bg-red-600 text-white p-3 rounded-xl mb-4 text-center font-semibold">
+            {apiError}
+          </p>
+        )}
 
-            {/* Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="text-slate-900 text-sm font-medium mb-2 block"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                {...register("email")}
-                type="email"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-                placeholder="Enter email"
-              />
-              {formState.errors.email && formState.touchedFields.email ? (
-                <p className="text-red-500 font-semibold text-center my-2">
-                  {formState.errors.email.message}
-                </p>
-              ) : (
-                ""
-              )}
-            </div>
-
-            {/* Mobile */}
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className="text-slate-900 text-sm font-medium mb-2 block"
-              >
-                Mobile No.
-              </label>
-              <input
-                id="phoneNumber"
-                {...register("phoneNumber")}
-                type="text"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-                placeholder="Enter mobile number"
-              />
-              {formState.errors.phoneNumber &&
-              formState.touchedFields.phoneNumber ? (
-                <p className="text-red-500 font-semibold text-center my-2">
-                  {formState.errors.phoneNumber.message}
-                </p>
-              ) : (
-                ""
-              )}
-            </div>
-
-            {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="text-slate-900 text-sm font-medium mb-2 block"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                {...register("password")}
-                type="password"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-                placeholder="Enter password"
-              />
-              {formState.errors.password && formState.touchedFields.password ? (
-                <p className="text-red-500 font-semibold text-center my-2">
-                  {formState.errors.password.message}
-                </p>
-              ) : (
-                ""
-              )}
-            </div>
-
-            {/* Birthday */}
-            <div>
-              <label
-                htmlFor="dateOfBirth"
-                className="text-slate-900 text-sm font-medium mb-2 block"
-              >
-                BirthDay
-              </label>
-              <input
-                id="dateOfBirth"
-                {...register("dateOfBirth")}
-                type="date"
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-              />
-              {formState.errors.dateOfBirth &&
-              formState.touchedFields.dateOfBirth ? (
-                <p className="text-red-500 font-semibold text-center my-2">
-                  {formState.errors.dateOfBirth.message}
-                </p>
-              ) : (
-                ""
-              )}
-            </div>
-
-            {/* Gender */}
-            <div className="sm:col-span-2">
-              <label
-                htmlFor="gender"
-                className="text-slate-900 text-sm font-medium mb-2 block"
-              >
-                Gender
-              </label>
-              <select
-                id="gender"
-                {...register("gender")}
-                className="bg-slate-100 w-full text-slate-900 text-sm px-4 py-3 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-              >
-                <option value="" disabled hidden>
-                  Select gender
-                </option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                {/* <option value="Other">Other</option> */}
-              </select>
-              {formState.errors.gender && formState.touchedFields.gender ? (
-                <p className="text-red-500 font-semibold text-center my-2">
-                  {formState.errors.gender.message}
-                </p>
-              ) : (
-                ""
-              )}
-            </div>
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit(handleRegister)}
+          className="grid sm:grid-cols-2 gap-8"
+        >
+          {/* First Name */}
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">
+              First Name
+            </label>
+            <input
+              {...register("firstName")}
+              className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
+              placeholder="First name"
+              type="text"
+            />
+            {formState.errors.firstName && (
+              <p className="text-red-500 mt-1">
+                {formState.errors.firstName.message}
+              </p>
+            )}
           </div>
 
-          {/* Submit Button */}
-          <div className="mt-12">
-            <button
-              disabled={isLoading}
-              type="submit"
-              className="mx-auto block min-w-32 py-2 px-6 text-md font-medium tracking-wider rounded-md text-white bg-[#009DDC] hover:bg-blue-700 focus:outline-none cursor-pointer"
+          {/* Last Name */}
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">
+              Last Name
+            </label>
+            <input
+              {...register("lastName")}
+              className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
+              placeholder="Last name"
+              type="text"
+            />
+            {formState.errors.lastName && (
+              <p className="text-red-500 mt-1">
+                {formState.errors.lastName.message}
+              </p>
+            )}
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">
+              Email
+            </label>
+            <input
+              {...register("email")}
+              className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
+              placeholder="Email address"
+              type="email"
+            />
+            {formState.errors.email && (
+              <p className="text-red-500 mt-1">
+                {formState.errors.email.message}
+              </p>
+            )}
+          </div>
+
+          {/* Phone */}
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">
+              Mobile Number
+            </label>
+            <input
+              {...register("phoneNumber")}
+              className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
+              placeholder="Phone number"
+              type="text"
+            />
+            {formState.errors.phoneNumber && (
+              <p className="text-red-500 mt-1">
+                {formState.errors.phoneNumber.message}
+              </p>
+            )}
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">
+              Password
+            </label>
+            <input
+              {...register("password")}
+              className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
+              placeholder="Password"
+              type="password"
+            />
+            {formState.errors.password && (
+              <p className="text-red-500 mt-1">
+                {formState.errors.password.message}
+              </p>
+            )}
+          </div>
+
+          {/* Birthday */}
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">
+              Birthday
+            </label>
+            <input
+              {...register("dateOfBirth")}
+              className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
+              type="date"
+            />
+            {formState.errors.dateOfBirth && (
+              <p className="text-red-500 mt-1">
+                {formState.errors.dateOfBirth.message}
+              </p>
+            )}
+          </div>
+
+          {/* Gender */}
+          <div className="sm:col-span-2">
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">
+              Gender
+            </label>
+            <select
+              {...register("gender")}
+              className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
             >
-              {isLoading ? (
-                <i className="fas fa-spinner fa-spin text-white"></i>
-              ) : (
-                "Sign Up"
-              )}
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+            {formState.errors.gender && (
+              <p className="text-red-500 mt-1">
+                {formState.errors.gender.message}
+              </p>
+            )}
+          </div>
+
+          {/* Submit */}
+          <div className="sm:col-span-2 mt-6 flex justify-center">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="bg-[#009DDC] text-white px-8 py-3 rounded-xl hover:scale-[1.02] transition"
+            >
+              {isLoading ? "Loading..." : "Sign Up"}
             </button>
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 }

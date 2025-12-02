@@ -15,9 +15,9 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-[#009DDC] shadow-md">
+    <nav className="bg-[#009DDC] dark:bg-gray-800 shadow-md transition duration-300">
       <div className="max-w-screen-xl mx-auto flex items-center justify-between p-4">
-        {/* Logo (Left) */}
+        {/* Logo */}
         <NavLink to="/" className="flex items-center space-x-3">
           <img
             src={smartcarelogo}
@@ -26,7 +26,7 @@ export default function Navbar() {
           />
         </NavLink>
 
-        {/* Main Links (Center) — Only if logged in */}
+        {/* Main Links — Logged In */}
         {userLogin && (
           <div className="flex-1 flex justify-center">
             <ul className="flex space-x-8">
@@ -34,15 +34,15 @@ export default function Navbar() {
                 { name: "Home", to: "/" },
                 { name: "Products", to: "/products" },
                 { name: "Cart", to: "/cart" },
-                // { name: "Map", to: "/map" },
               ].map((link) => (
                 <li key={link.to}>
                   <NavLink
                     to={link.to}
                     className={({ isActive }) =>
-                      `text-lg font-medium px-3 py-2 rounded-md transition duration-200 ${
+                      `text-lg font-medium px-3 py-2 rounded-md transition duration-200 
+                      ${
                         isActive
-                          ? "bg-white text-[#009DDC]"
+                          ? "bg-white text-[#009DDC] dark:bg-white dark:text-[#009DDC]"
                           : "text-white hover:bg-white hover:text-[#009DDC]"
                       }`
                     }
@@ -55,7 +55,7 @@ export default function Navbar() {
           </div>
         )}
 
-        {/* Auth Buttons (Right) */}
+        {/* Auth Buttons */}
         <div className="flex items-center space-x-4">
           {userLogin ? (
             <>
@@ -68,7 +68,7 @@ export default function Navbar() {
 
               <span
                 onClick={handleSignOut}
-                className="text-lg px-4 py-2  cursor-pointer rounded-md font-medium text-white  hover:bg-white hover:text-[#009DDC] transition duration-200"
+                className="text-lg px-4 py-2 cursor-pointer rounded-md font-medium text-white hover:bg-white hover:text-[#009DDC] transition duration-200"
               >
                 Sign Out
               </span>

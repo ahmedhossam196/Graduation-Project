@@ -4,45 +4,38 @@ import bracelet from "../../assets/bracelet.jpg";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import cartIcon from "../../assets/cart-empty.png";
 import { useForm } from "react-hook-form";
-import  axios  from 'axios';
+import axios from "axios";
 export default function Cart() {
-const form = useForm({
-
-defaultValues: {
-  fullName: "",
-  phoneNumber: "",
-  userAddress: "",
-  paymentMethod: 1
-}
-
-});
-
-let{register ,handleSubmit} = form;
-let{onChange,onBlur,ref,name} = register("fullName")
-
-
-function handelOrder(data) {
-  console.log(data);
-
-  axios.post(
-    "http://smartbracelet.runasp.net/api/address",
-    data, 
-    {
-      headers: {
-        // change 'token' to 'Authorization' and add 'Bearer ' prefix
-        Authorization: `Bearer ${localStorage.getItem("userToken")}` 
-      }
-    }
-  )
-  .then((res) => {
-    console.log(res);
-    setShowCheckout(false); 
-  })
-  .catch((err) => {
-    console.log(err);
+  const form = useForm({
+    defaultValues: {
+      fullName: "",
+      phoneNumber: "",
+      userAddress: "",
+      paymentMethod: 1,
+    },
   });
-}
 
+  let { register, handleSubmit } = form;
+  let { onChange, onBlur, ref, name } = register("fullName");
+
+  function handelOrder(data) {
+    console.log(data);
+
+    axios
+      .post("http://smartbracelet.runasp.net/api/address", data, {
+        headers: {
+          // change 'token' to 'Authorization' and add 'Bearer ' prefix
+          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setShowCheckout(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   const [items, setItems] = useState([
     {
@@ -216,7 +209,7 @@ function handelOrder(data) {
             <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">
               Checkout
             </h2>
-            <form className="space-y-4"    onSubmit={handleSubmit(handelOrder)}>
+            <form className="space-y-4" onSubmit={handleSubmit(handelOrder)}>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                   Full Name
@@ -228,15 +221,14 @@ function handelOrder(data) {
                   className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#009DDC] dark:bg-gray-700 dark:text-gray-100"
                 />
               </div>
-            
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                   Phone Number
                 </label>
                 <input
                   type="tel"
-                {...register("phoneNumber")}
-
+                  {...register("phoneNumber")}
                   placeholder="+20 123 456 7890"
                   className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#009DDC] dark:bg-gray-700 dark:text-gray-100"
                 />
@@ -246,9 +238,8 @@ function handelOrder(data) {
                   Address
                 </label>
                 <input
-                type="text"
-               {...register("userAddress")}
-
+                  type="text"
+                  {...register("userAddress")}
                   placeholder="123 Street, City, Country"
                   className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#009DDC] dark:bg-gray-700 dark:text-gray-100"
                 ></input>
@@ -257,9 +248,10 @@ function handelOrder(data) {
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                   Payment Method
                 </label>
-                <select 
-               {...register("paymentMethod", { valueAsNumber: true })} 
-                 className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#009DDC] dark:bg-gray-700 dark:text-gray-100">
+                <select
+                  {...register("paymentMethod", { valueAsNumber: true })}
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#009DDC] dark:bg-gray-700 dark:text-gray-100"
+                >
                   <option value="1">Cash on Delivery</option>
                   <option value="2">Credit / Debit Card</option>
                 </select>
@@ -267,7 +259,6 @@ function handelOrder(data) {
               <button
                 type="submit"
                 className="w-full bg-[#009DDC] cursor-pointer text-white py-3 rounded-2xl font-bold shadow hover:scale-[1.01] transition"
-                
               >
                 Confirm Order
               </button>

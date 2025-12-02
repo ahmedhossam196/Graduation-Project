@@ -1,146 +1,250 @@
-import React, { useState } from "react"
-import { Mail, Phone, MapPin, User, LogOut, Edit2 } from "lucide-react"
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Mail, Phone, MapPin, User } from "lucide-react";
 
 export default function Profile() {
-  const [isEditing, setIsEditing] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState("");
+  const [apiSuccess, setApiSuccess] = useState("");
 
-  // Mock user data
-  const userData = {
-    name: "Mohammed Ibrahim",
-    email: "MohammedIbrahim@gmail.com",
-    phone: "+201111111111",
-    address: "6th of October - Media Production City - Gate 4 - International Academy for Engineering and Media Sciences",
-  }
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleLogout = () => {
-    console.log("Logging out...")
-    alert("Logged out successfully!")
-  }
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    email: "",
+  });
 
-  const handleEditProfile = () => {
-    setIsEditing(!isEditing)
+  const [address, setAddress] = useState("");
+
+  // Detect dark mode from system
+  useEffect(() => {
+    const checkDark = window.matchMedia("(prefers-color-scheme: dark)");
+    if (checkDark.matches) document.documentElement.classList.add("dark");
+    checkDark.addEventListener("change", (e) => {
+      if (e.matches) document.documentElement.classList.add("dark");
+      else document.documentElement.classList.remove("dark");
+    });
+  }, []);
+
+  // ============================
+  //     FETCH PROFILE DATA
+  // ============================
+  useEffect(() => {
+    const token = localStorage.getItem("userToken");
+
+    if (!token) {
+      setApiError("You are not logged in");
+      return;
+    }
+
+    setIsLoading(true);
+
+    const savedUser = localStorage.getItem("userData");
+    const savedAddress = localStorage.getItem("userAddress");
+
+    if (savedUser) setUserData(JSON.parse(savedUser));
+    if (savedAddress) setAddress(savedAddress);
+
+    axios
+      .get("http://smartbracelet.runasp.net/api/auth/CurrentUser", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        setUserData(res.data.data);
+        localStorage.setItem("userData", JSON.stringify(res.data.data));
+      })
+      .catch(() => setApiError("Failed to load user data"));
+
+    axios
+      .get("http://smartbracelet.runasp.net/api/address", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        const userAddress =
+          res.data?.data?.[0]?.userAddress || "No address available";
+        setAddress(userAddress);
+        localStorage.setItem("userAddress", userAddress);
+      })
+      .catch(() => setApiError("Failed to load address"))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  // ============================
+  //     UPDATE PROFILE
+  // ============================
+  function handleUpdate() {
+    const token = localStorage.getItem("userToken");
+
+    setIsLoading(true);
+    setApiError("");
+    setApiSuccess("");
+
+    axios
+      .post("http://smartbracelet.runasp.net/api/auth/updateUser", userData, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(() => {
+        setApiSuccess("Profile updated successfully ✔");
+        setIsEditing(false);
+        localStorage.setItem("userData", JSON.stringify(userData));
+      })
+      .catch(() => setApiError("Failed to update profile"))
+      .finally(() => setIsLoading(false));
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-      {/* Header */}
-      <header className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm transition-colors duration-300">
-        <div className="mx-auto max-w-4xl px-6 py-6 flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-300">
-            My Account
-          </h1>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-          >
-            <LogOut className="h-4 w-4" />
-            Logout
-          </button>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 p-6 flex justify-center pt-10">
+      <div className="w-full max-w-3xl">
+        <h1 className="text-center text-4xl font-extrabold text-[#009DDC] mb-8">
+          My Profile
+        </h1>
 
-      {/* Main Content */}
-      <main className="mx-auto max-w-4xl px-4 md:px-6 py-12">
+        {/* Alerts */}
+        {apiSuccess && (
+          <p className="bg-green-600 text-white p-3 rounded-xl mb-4 text-center shadow">
+            {apiSuccess}
+          </p>
+        )}
+        {apiError && (
+          <p className="bg-red-600 text-white p-3 rounded-xl mb-4 text-center shadow">
+            {apiError}
+          </p>
+        )}
+
         {/* Profile Card */}
-        <div className="mb-8 rounded-lg bg-white dark:bg-gray-800 p-6 md:p-8 shadow transition-colors duration-300">
-          <div className="flex flex-col md:flex-row items-center gap-6">
-            {/* Avatar */}
-            <div className="flex-shrink-0">
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-blue-200 dark:bg-blue-900 transition-colors duration-300">
-                <User className="h-12 w-12 text-blue-600 dark:text-blue-400" />
-              </div>
-            </div>
-
-            {/* Profile Info */}
-            <div className="flex-1 text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-300">
-                {userData.name}
-              </h2>
-              <div className="mb-4 flex items-center justify-center md:justify-start gap-2 text-gray-500 dark:text-gray-300 transition-colors duration-300">
-                <Mail className="h-4 w-4" />
-                <span>{userData.email}</span>
-              </div>
-              <button
-                onClick={handleEditProfile}
-                className="flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-              >
-                <Edit2 className="h-4 w-4" />
-                {isEditing ? "Cancel Edit" : "Edit Profile"}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Information Sections */}
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Personal Information */}
-          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-sm transition-colors duration-300">
-            <div className="mb-6 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 transition-colors duration-300">
-                Personal Information
-              </h3>
-              <button
-                onClick={handleEditProfile}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-300"
-              >
-                <Edit2 className="h-4 w-4" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {/* Full Name */}
-              <div>
-                <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase text-gray-400 dark:text-gray-500 transition-colors duration-300">
-                  <User className="h-4 w-4" />
-                  Full Name
-                </div>
-                <p className="text-gray-800 dark:text-gray-200 transition-colors duration-300">{userData.name}</p>
-              </div>
-
-              {/* Email */}
-              <div>
-                <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase text-gray-400 dark:text-gray-500 transition-colors duration-300">
-                  <Mail className="h-4 w-4" />
-                  Email Address
-                </div>
-                <p className="text-gray-800 dark:text-gray-200 transition-colors duration-300">{userData.email}</p>
-              </div>
-
-              {/* Phone */}
-              <div>
-                <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase text-gray-400 dark:text-gray-500 transition-colors duration-300">
-                  <Phone className="h-4 w-4" />
-                  Phone Number
-                </div>
-                <p className="text-gray-800 dark:text-gray-200 transition-colors duration-300">{userData.phone}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Shipping Address */}
-          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-sm transition-colors duration-300">
-            <div className="mb-6 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 transition-colors duration-300">
-                Shipping Address
-              </h3>
-              <button
-                onClick={handleEditProfile}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-300"
-              >
-                <Edit2 className="h-4 w-4" />
-              </button>
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl mb-8 transition-colors duration-300">
+          <div className="flex items-center gap-6">
+            <div className="h-24 w-24 bg-[#009DDC]/20 dark:bg-[#009DDC]/30 rounded-full flex items-center justify-center">
+              <User className="h-12 w-12 text-[#009DDC]" />
             </div>
 
             <div>
-              <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase text-gray-400 dark:text-gray-500 transition-colors duration-300">
-                <MapPin className="h-4 w-4" />
-                Address
-              </div>
-              <p className="text-gray-800 dark:text-gray-200 transition-colors duration-300">{userData.address}</p>
+              <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
+                {userData.firstName} {userData.lastName}
+              </h2>
+              <p className="text-gray-500 dark:text-gray-300 flex items-center gap-2">
+                <Mail className="h-4 w-4" /> {userData.email}
+              </p>
             </div>
           </div>
+
+          <button
+            onClick={() => setIsEditing(!isEditing)}
+            className="mt-6 bg-[#009DDC] text-white px-6 py-2 rounded-xl shadow hover:scale-[1.03] transition cursor-pointer"
+          >
+            {isEditing ? "Cancel" : "Edit Profile"}
+          </button>
         </div>
-      </main>
+
+        {/* Inputs Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl transition-colors duration-300">
+          <div className="grid sm:grid-cols-2 gap-6">
+            {/* First Name */}
+            <div>
+              <label className="block text-gray-600 dark:text-gray-300 font-semibold mb-1">
+                First Name
+              </label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={userData.firstName}
+                  onChange={(e) =>
+                    setUserData({ ...userData, firstName: e.target.value })
+                  }
+                  className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
+                />
+              ) : (
+                <p className="text-gray-800 dark:text-gray-100">
+                  {userData.firstName}
+                </p>
+              )}
+            </div>
+
+            {/* Last Name */}
+            <div>
+              <label className="block text-gray-600 dark:text-gray-300 font-semibold mb-1">
+                Last Name
+              </label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={userData.lastName}
+                  onChange={(e) =>
+                    setUserData({ ...userData, lastName: e.target.value })
+                  }
+                  className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
+                />
+              ) : (
+                <p className="text-gray-800 dark:text-gray-100">
+                  {userData.lastName}
+                </p>
+              )}
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label className="block text-gray-600 dark:text-gray-300 font-semibold mb-1">
+                Phone Number
+              </label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={userData.phoneNumber}
+                  onChange={(e) =>
+                    setUserData({ ...userData, phoneNumber: e.target.value })
+                  }
+                  className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
+                />
+              ) : (
+                <p className="text-gray-800 dark:text-gray-100">
+                  {userData.phoneNumber}
+                </p>
+              )}
+            </div>
+
+            {/* Birthday */}
+            <div>
+              <label className="block text-gray-600 dark:text-gray-300 font-semibold mb-1">
+                Birthday
+              </label>
+              {isEditing ? (
+                <input
+                  type="date"
+                  value={userData.dateOfBirth}
+                  onChange={(e) =>
+                    setUserData({ ...userData, dateOfBirth: e.target.value })
+                  }
+                  className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
+                />
+              ) : (
+                <p className="text-gray-800 dark:text-gray-100">
+                  {userData.dateOfBirth}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Address */}
+          <div className="mt-6">
+            <label className="block text-gray-600 dark:text-gray-300 font-semibold mb-1">
+              Address
+            </label>
+            <p className="text-gray-800 dark:text-gray-100">{address}</p>
+          </div>
+
+          {isEditing && (
+            <button
+              onClick={handleUpdate}
+              className="w-full mt-8 bg-green-600 text-white p-3 rounded-xl shadow hover:scale-[1.03] transition cursor-pointer"
+            >
+              {isLoading ? "Updating..." : "Save Changes"}
+            </button>
+          )}
+        </div>
+      </div>
     </div>
-  )
+  );
 }
