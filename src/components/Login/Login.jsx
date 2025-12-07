@@ -6,10 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { UserContext } from "../../Context/UserContext";
 import loginpic from "../../assets/LoginImage.png";
+import DarkImage from "../../assets/DarkImage.png";
 
 export default function Login() {
   const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false); // new state
   const navigate = useNavigate();
   const { setuserLogin } = useContext(UserContext);
 
@@ -30,15 +32,16 @@ export default function Login() {
 
   const { register, handleSubmit, formState } = form;
 
-  // Dark Mode
+  // Dark Mode detection
   useEffect(() => {
     const checkDark = window.matchMedia("(prefers-color-scheme: dark)");
-    if (checkDark.matches) document.documentElement.classList.add("dark");
+    setIsDarkMode(checkDark.matches); // set initial state
 
-    checkDark.addEventListener("change", (e) => {
-      if (e.matches) document.documentElement.classList.add("dark");
-      else document.documentElement.classList.remove("dark");
-    });
+    const listener = (e) => setIsDarkMode(e.matches);
+    checkDark.addEventListener("change", listener);
+
+    // Cleanup listener
+    return () => checkDark.removeEventListener("change", listener);
   }, []);
 
   function handleLogin(data) {
@@ -147,7 +150,11 @@ export default function Login() {
 
         {/* Image */}
         <div className="flex justify-center items-center">
-          <img src={loginpic} className="rounded-3xl w-[90%]" alt="login" />
+          <img
+            src={isDarkMode ? DarkImage : loginpic}
+            className="rounded-3xl w-full"
+            alt="login"
+          />
         </div>
       </div>
     </div>
