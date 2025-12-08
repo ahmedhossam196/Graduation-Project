@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import smartcarelogo from "../../assets/agaga.jpeg";
+import smartcarelogo from "../../assets/agagaa.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { UserContext } from "./../../Context/UserContext";
 
@@ -81,7 +81,6 @@ export default function Navbar() {
               >
                 Login
               </NavLink>
-
               <NavLink
                 to="/register"
                 className="text-lg px-4 py-2 rounded-md font-medium text-white hover:bg-white hover:text-[#009DDC] transition duration-200"
