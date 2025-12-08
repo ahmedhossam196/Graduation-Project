@@ -100,9 +100,9 @@ export default function Register() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition p-6 flex justify-center items-center">
       <div className="max-w-4xl w-full bg-white dark:bg-gray-800 rounded-3xl p-10 transition">
         {/* Logo & Title */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-3">
           <Link to="/">
-            <img src={Com} alt="logo" className="w-40 mx-auto" />
+            <img src={Com} alt="logo" className="w-35 mx-auto" />
           </Link>
           <h4 className="text-gray-600 dark:text-gray-300 mt-2">
             Create your SmartCare account
@@ -125,7 +125,7 @@ export default function Register() {
         {/* Form */}
         <form
           onSubmit={handleSubmit(handleRegister)}
-          className="grid sm:grid-cols-2 gap-8"
+          className="grid sm:grid-cols-2 gap-4"
         >
           {/* First Name */}
           <div>
@@ -259,7 +259,7 @@ export default function Register() {
             <button
               type="submit"
               disabled={isLoading}
-              className="bg-[#009DDC] text-white px-8 py-3 rounded-xl hover:scale-[1.02] transition"
+              className="bg-[#009DDC] text-white cursor-pointer px-8 py-3 rounded-xl hover:scale-[1.02] transition"
             >
               {isLoading ? "Loading..." : "Sign Up"}
             </button>
