@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Mail, Phone, MapPin, User } from "lucide-react";
+import { Mail, User } from "lucide-react";
+import { toast, Toaster } from "react-hot-toast";
+import z from "zod";
 
 export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
-  const [apiError, setApiError] = useState("");
-  const [apiSuccess, setApiSuccess] = useState("");
-
   const [isEditing, setIsEditing] = useState(false);
 
   const [userData, setUserData] = useState({
@@ -19,7 +18,7 @@ export default function Profile() {
 
   const [address, setAddress] = useState("");
 
-  // Detect dark mode from system
+  // Dark mode detection
   useEffect(() => {
     const checkDark = window.matchMedia("(prefers-color-scheme: dark)");
     if (checkDark.matches) document.documentElement.classList.add("dark");
@@ -29,16 +28,10 @@ export default function Profile() {
     });
   }, []);
 
-  // ============================
-  //     FETCH PROFILE DATA
-  // ============================
+  // Fetch profile data
   useEffect(() => {
     const token = localStorage.getItem("userToken");
-
-    if (!token) {
-      setApiError("You are not logged in");
-      return;
-    }
+    if (!token) return toast.error("You are not logged in");
 
     setIsLoading(true);
 
@@ -56,7 +49,8 @@ export default function Profile() {
         setUserData(res.data.data);
         localStorage.setItem("userData", JSON.stringify(res.data.data));
       })
-      .catch(() => setApiError("Failed to load user data"));
+      .catch(() => toast.error("Failed to load user data"))
+      .finally(() => setIsLoading(false));
 
     axios
       .get("http://smartbracelet.runasp.net/api/address", {
@@ -68,51 +62,60 @@ export default function Profile() {
         setAddress(userAddress);
         localStorage.setItem("userAddress", userAddress);
       })
-      .catch(() => setApiError("Failed to load address"))
-      .finally(() => setIsLoading(false));
+      .catch(() => toast.error("Failed to load address"));
   }, []);
 
-  // ============================
-  //     UPDATE PROFILE
-  // ============================
-  function handleUpdate() {
-    const token = localStorage.getItem("userToken");
+  // Validation function
+  function validateFields(data) {
+    if (!data.firstName) throw new Error("First name is required");
+    if (!data.lastName) throw new Error("Last name is required");
+    if (!data.email) throw new Error("Email is required");
+    if (!/\S+@\S+\.\S+/.test(data.email)) throw new Error("Invalid email address");
+    if (!data.dateOfBirth) throw new Error("Date of birth is required");
+    if (new Date(data.dateOfBirth) >= new Date())
+      throw new Error("Date of birth can't be in the future");
 
+    // Phone validation
+    const phone = data.phoneNumber;
+    if (!phone) throw new Error("Phone number is required");
+    if (phone.length < 11) throw new Error("Phone number seems incomplete");
+    if (!/^01[0-2,5]\d{8}$/.test(phone))
+      throw new Error(
+        "Phone number must be 11 digits and start with 010, 011, 012, or 015 (Egyptian number)"
+      );
+  }
+
+  // Update profile
+  function handleUpdate() {
+    try {
+      validateFields(userData); // validate all fields
+    } catch (err) {
+      return toast.error(err.message);
+    }
+
+    const token = localStorage.getItem("userToken");
     setIsLoading(true);
-    setApiError("");
-    setApiSuccess("");
 
     axios
       .post("http://smartbracelet.runasp.net/api/auth/updateUser", userData, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => {
-        setApiSuccess("Profile updated successfully ✔");
+        toast.success("Profile updated successfully ✔");
         setIsEditing(false);
         localStorage.setItem("userData", JSON.stringify(userData));
       })
-      .catch(() => setApiError("Failed to update profile"))
+      .catch(() => toast.error("Failed to update profile"))
       .finally(() => setIsLoading(false));
   }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 p-6 flex justify-center pt-10">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="w-full max-w-3xl">
         <h1 className="text-center text-4xl font-extrabold text-[#009DDC] mb-8">
           My Profile
         </h1>
-
-        {/* Alerts */}
-        {apiSuccess && (
-          <p className="bg-green-600 text-white p-3 rounded-xl mb-4 text-center shadow">
-            {apiSuccess}
-          </p>
-        )}
-        {apiError && (
-          <p className="bg-red-600 text-white p-3 rounded-xl mb-4 text-center shadow">
-            {apiError}
-          </p>
-        )}
 
         {/* Profile Card */}
         <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl mb-8 transition-colors duration-300">
@@ -194,9 +197,14 @@ export default function Profile() {
                   type="text"
                   value={userData.phoneNumber}
                   onChange={(e) =>
-                    setUserData({ ...userData, phoneNumber: e.target.value })
+                    setUserData({
+                      ...userData,
+                      phoneNumber: e.target.value.replace(/\D/g, ""),
+                    })
                   }
+                  maxLength={11}
                   className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
+                  placeholder="01012345678"
                 />
               ) : (
                 <p className="text-gray-800 dark:text-gray-100">
@@ -239,6 +247,7 @@ export default function Profile() {
             <button
               onClick={handleUpdate}
               className="w-full mt-8 bg-green-600 text-white p-3 rounded-xl shadow hover:scale-[1.03] transition cursor-pointer"
+              disabled={isLoading}
             >
               {isLoading ? "Updating..." : "Save Changes"}
             </button>

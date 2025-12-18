@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import bracelet from "../../assets/bracelet.jpg";
 import { Heart, MapPin, Clock, Bell } from "lucide-react";
+import { ThemeContext } from "../../Context/ThemeContext"; 
 
 export default function Home() {
   return (

@@ -13,41 +13,72 @@ import Map from "./components/Map/Map";
 import Home from "./components/Home/Home";
 import Profile from "./components/Profile/Profile";
 import UserContextProvider from "./Context/UserContext";
-import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import CartContextProvider from "./Context/CartContext";
+import { Toaster } from "react-hot-toast";
+import ThemeContextProvider from "./Context/ThemeContext";
 const x = createBrowserRouter([
   {
     path: "",
     element: <Layout />,
     children: [
-      { index: true, element:<ProtectedRoute>
-        <Home/>
-      </ProtectedRoute>},
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        ),
+      },
       { path: "login", element: <Login /> },
       { path: "Register", element: <Register /> },
-      { path: "Products", element:<ProtectedRoute>
-        <Products/>
-      </ProtectedRoute>},
-      { path: "cart", element:<ProtectedRoute>
-        <Cart/>
-      </ProtectedRoute>},
-      { path: "map", element:<ProtectedRoute>
-        <Map/>
-      </ProtectedRoute>},
-      { path: "profile", element:<ProtectedRoute>
-        <Profile/>
-      </ProtectedRoute>},
+      {
+        path: "Products",
+        element: (
+          <ProtectedRoute>
+            <Products />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "cart",
+        element: (
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "map",
+        element: (
+          <ProtectedRoute>
+            <Map />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ),
+      },
       { path: "*", element: <Notfound /> },
     ],
   },
 ]);
 
 function App() {
-
   return (
     <>
-    <UserContextProvider>
-      <RouterProvider router={x}></RouterProvider>
+      <Toaster />
+      <UserContextProvider>
+        <ThemeContextProvider>
+          <CartContextProvider>
+            <RouterProvider router={x}></RouterProvider>
+          </CartContextProvider>
+        </ThemeContextProvider>
       </UserContextProvider>
     </>
   );
