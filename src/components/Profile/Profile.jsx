@@ -18,15 +18,7 @@ export default function Profile() {
 
   const [address, setAddress] = useState("");
 
-  // Dark mode detection
-  useEffect(() => {
-    const checkDark = window.matchMedia("(prefers-color-scheme: dark)");
-    if (checkDark.matches) document.documentElement.classList.add("dark");
-    checkDark.addEventListener("change", (e) => {
-      if (e.matches) document.documentElement.classList.add("dark");
-      else document.documentElement.classList.remove("dark");
-    });
-  }, []);
+  
 
   // Fetch profile data
   useEffect(() => {

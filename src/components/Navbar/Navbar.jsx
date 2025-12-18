@@ -14,7 +14,6 @@ export default function Navbar() {
 
   const isDarkMode = theme === "dark";
 
-  // حساب عدد المنتجات للعداد
   const itemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   function handleSignOut() {
@@ -62,9 +61,19 @@ export default function Navbar() {
           </div>
         )}
 
-        {/* الـ Actions اللي عاليمين */}
         <div className="flex items-center space-x-4">
           
+          {/* زرار الدارك مود - وضعناه هنا قبل شرط الـ userLogin ليبقى ظاهراً دائماً */}
+          <button
+            onClick={toggleTheme}
+            className="text-white cursor-pointer text-xl p-2 hover:bg-white/20 rounded-md transition"
+          >
+            {isDarkMode ? (
+              <i className="fa-solid fa-sun text-yellow-400"></i>
+            ) : (
+              <i className="fa-solid fa-moon"></i>
+            )}
+          </button>
 
           {userLogin ? (
             <>
@@ -87,18 +96,7 @@ export default function Navbar() {
               >
                 Sign Out
               </span>
-          <button
-            onClick={toggleTheme}
-            className="text-white cursor-pointer text-xl p-2 hover:bg-white/20 rounded-md transition"
-          >
-            {isDarkMode ? (
-              <i className="fa-solid fa-sun text-yellow-400"></i>
-            ) : (
-              <i className="fa-solid fa-moon"></i>
-            )}
-          </button>
 
-              {/* السلة في أقصى اليمين مع الأنيميشن */}
               <NavLink
                 to="/cart"
                 className={({ isActive }) =>
