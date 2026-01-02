@@ -95,31 +95,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Products */}
-      {/* <section className="max-w-6xl mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-10 text-center">
-          Featured Products
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {[1, 2, 3].map((product) => (
-            <div
-              key={product}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 hover:shadow-xl transition"
-            >
-              <img
-                src={bracelet}
-                alt="Product"
-                className="w-full h-48 object-cover rounded-xl mb-4"
-              />
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">
-                Linko Bracelet
-              </h3>
-              <p className="text-gray-500 dark:text-gray-300 mb-2">Health Monitoring Device</p>
-              <span className="text-gray-800 dark:text-gray-100 font-bold">120 LE</span>
-            </div>
-          ))}
-        </div>
-      </section> */}
+     
+      
     </div>)
     }
 

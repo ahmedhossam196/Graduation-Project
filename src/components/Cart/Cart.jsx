@@ -98,8 +98,7 @@ export default function Cart() {
                       alt={item.productName}
                       className="w-24 h-24 object-cover rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm"
                       onError={(e) => {
-                        e.target.src =
-                          "https://placehold.co/120?text=No+Image";
+                        e.target.src = "https://placehold.co/120?text=No+Image";
                       }}
                     />
                     <div className="flex flex-col justify-between">

@@ -5,13 +5,18 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { UserContext } from "../../Context/UserContext";
+import { ThemeContext } from "../../Context/ThemeContext"; 
+import toast, { Toaster } from "react-hot-toast";
 import loginpic from "../../assets/LoginImage.png";
 import DarkImage from "../../assets/DarkImage.png";
 
 export default function Login() {
   const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false); // new state
+
+  const { theme } = useContext(ThemeContext);
+  const isDarkMode = theme === "dark";
+
   const navigate = useNavigate();
   const { setuserLogin } = useContext(UserContext);
 
@@ -28,21 +33,22 @@ export default function Login() {
   const form = useForm({
     defaultValues: { email: "", password: "" },
     resolver: zodResolver(schema),
+    mode: "onSubmit",
   });
 
   const { register, handleSubmit, formState } = form;
 
-  // Dark Mode detection
+  // Show validation errors in order
   useEffect(() => {
-    const checkDark = window.matchMedia("(prefers-color-scheme: dark)");
-    setIsDarkMode(checkDark.matches); // set initial state
-
-    const listener = (e) => setIsDarkMode(e.matches);
-    checkDark.addEventListener("change", listener);
-
-    // Cleanup listener
-    return () => checkDark.removeEventListener("change", listener);
-  }, []);
+    const errors = formState.errors;
+    const fieldsOrder = ["email", "password"];
+    for (const field of fieldsOrder) {
+      if (errors[field]) {
+        toast.error(errors[field].message);
+        break; // Show one error at a time in order
+      }
+    }
+  }, [formState.errors]);
 
   function handleLogin(data) {
     setIsLoading(true);
@@ -57,12 +63,16 @@ export default function Login() {
           navigate("/");
         }
       })
-      .catch(() => setApiError("Incorrect Email or Password"))
+      .catch(() => {
+        // setApiError("Incorrect Email or Password");
+        toast.error("Incorrect Email or Password");
+      })
       .finally(() => setIsLoading(false));
   }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition p-6 flex justify-center items-center">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="max-w-5xl w-full grid lg:grid-cols-2 gap-10">
         {/* Login Card */}
         <form
@@ -92,11 +102,6 @@ export default function Login() {
               className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
               placeholder="Enter Email"
             />
-            {formState.errors.email && (
-              <p className="text-red-500 mt-1">
-                {formState.errors.email.message}
-              </p>
-            )}
           </div>
 
           {/* Password */}
@@ -110,19 +115,13 @@ export default function Login() {
               className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
               placeholder="Enter Password"
             />
-            {formState.errors.password && (
-              <p className="text-red-500 mt-1">
-                {formState.errors.password.message}
-              </p>
-            )}
           </div>
 
           {/* Remember + Forget */}
           <div className="flex justify-between items-center mt-4">
-            <label className="flex gap-2 items-center text-gray-700 dark:text-gray-300">
-              <input type="checkbox" /> Remember me
+            <label className="flex gap-2 items-center text-gray-700 dark:text-gray-300 cursor-pointer">
+              <input type="checkbox" className="accent-[#009DDC]" /> Remember me
             </label>
-
             <Link
               to="forgetPassword"
               className="text-[#009DDC] hover:underline"
@@ -135,7 +134,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full cursor-pointer mt-8 bg-[#009DDC] text-white p-3 rounded-xl hover:scale-[1.02] transition"
+            className="w-full cursor-pointer mt-8 bg-[#009DDC] text-white p-3 rounded-xl hover:scale-[1.02] transition shadow-lg active:scale-95"
           >
             {isLoading ? "Loading..." : "Sign in"}
           </button>
@@ -148,13 +147,28 @@ export default function Login() {
           </p>
         </form>
 
-        {/* Image */}
-        <div className="flex justify-center items-center">
-          <img
-            src={isDarkMode ? DarkImage : loginpic}
-            className="rounded-3xl w-full"
-            alt="login"
-          />
+        {/* Image Section */}
+        <div className="hidden lg:flex flex-col justify-center items-center relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#009DDC]/10 to-transparent dark:from-[#009DDC]/5">
+          <div className="absolute top-0 -left-10 w-40 h-40 bg-[#009DDC]/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 -right-10 w-40 h-40 bg-[#009DDC]/20 rounded-full blur-3xl"></div>
+
+          <div className="relative z-10 p-4 transform transition-all duration-700 hover:scale-105">
+            <img
+              src={isDarkMode ? DarkImage : loginpic}
+              className="rounded-2xl w-full max-h-[500px] object-contain drop-shadow-[0_20px_50px_rgba(0,157,220,0.3)]"
+              alt="SmartCare Visual"
+            />
+          </div>
+
+          <div className="text-center mt-6 z-10 px-6">
+            <h2 className="text-2xl font-bold text-[#009DDC] dark:text-white">
+              Safe & Secure
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm max-w-xs">
+              Join our community and experience the best care for your health
+              and family.
+            </p>
+          </div>
         </div>
       </div>
     </div>

@@ -11,3 +11,31 @@
     @apply bg-gray-900 text-white;
   }
 }
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #009DDC;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #007bb0;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #009DDC;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #009DDC transparent;
+}
+

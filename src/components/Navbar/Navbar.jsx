@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import smartcarelogo from "../../assets/agagaa.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { UserContext } from "./../../Context/UserContext";
+
+import { UserContext } from "../../Context/UserContext";
 import { ThemeContext } from "../../Context/ThemeContext";
 import { CartContext } from "../../Context/CartContext";
 
@@ -10,11 +11,12 @@ export default function Navbar() {
   const { userLogin, setuserLogin } = useContext(UserContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { cartItems } = useContext(CartContext);
+
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const isDark = theme === "dark";
 
-  const isDarkMode = theme === "dark";
-
-  const itemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const itemsCount = cartItems.reduce((t, i) => t + i.quantity, 0);
 
   function handleSignOut() {
     localStorage.removeItem("userToken");
@@ -22,118 +24,125 @@ export default function Navbar() {
     navigate("/login");
   }
 
-  return (
-    <nav className="bg-[#009DDC] dark:bg-gray-800 shadow-md transition-colors duration-300">
-      <div className="max-w-7xl mx-auto flex items-center justify-between p-4">
-        
-        <NavLink to="/" className="flex items-center space-x-3">
-          <img
-            src={smartcarelogo}
-            alt="SmartCare Logo"
-            className="w-20 h-auto object-contain"
-          />
-        </NavLink>
+  const navLink =
+    "px-5 py-2.5 rounded-xl text-base font-semibold tracking-wide transition-all duration-300 cursor-pointer";
 
-        {/* Main Links */}
-        {userLogin && (
-          <div className="flex-1 flex justify-center">
-            <ul className="flex space-x-8">
-              {[
-                { name: "Home", to: "/" },
-                { name: "Products", to: "/products" },
-              ].map((link) => (
-                <li key={link.to}>
+  const active = "bg-white text-[#009DDC] shadow dark:bg-gray-100";
+
+  const inactive = "text-white/90 hover:bg-white/20 cursor-pointer";
+
+  return (
+    <header className="sticky top-0 z-50">
+      <nav className="backdrop-blur-md bg-[#009DDC]/90 dark:bg-gray-900/90 border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-5">
+          <div className="flex h-20 items-center justify-between">
+            {/* Logo */}
+            <NavLink to="/" className="flex items-center gap-3 cursor-pointer">
+              <img src={smartcarelogo} className="w-14" alt="logo" />
+              <span className="text-white text-lg font-semibold tracking-wide hidden sm:block">
+                SmartCare
+              </span>
+            </NavLink>
+
+            {/* Desktop Links */}
+            {userLogin && (
+              <div className="hidden md:flex items-center gap-2">
+                {["/", "/products"].map((path, i) => (
                   <NavLink
-                    to={link.to}
+                    key={path}
+                    to={path}
                     className={({ isActive }) =>
-                      `text-lg font-medium px-3 py-2 rounded-md transition duration-200 ${
-                        isActive
-                          ? "bg-white text-[#009DDC] dark:bg-white dark:text-gray-800"
-                          : "text-white hover:bg-white hover:text-[#009DDC] dark:hover:text-gray-800"
-                      }`
+                      `${navLink} ${isActive ? active : inactive}`
                     }
                   >
-                    {link.name}
+                    {i === 0 ? "Home" : "Products"}
                   </NavLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <div className="flex items-center space-x-4">
-          
-          {/* زرار الدارك مود - وضعناه هنا قبل شرط الـ userLogin ليبقى ظاهراً دائماً */}
-          <button
-            onClick={toggleTheme}
-            className="text-white cursor-pointer text-xl p-2 hover:bg-white/20 rounded-md transition"
-          >
-            {isDarkMode ? (
-              <i className="fa-solid fa-sun text-yellow-400"></i>
-            ) : (
-              <i className="fa-solid fa-moon"></i>
+                ))}
+              </div>
             )}
-          </button>
 
-          {userLogin ? (
-            <>
-              <NavLink
-                to="/profile"
-                className={({ isActive }) =>
-                  `text-lg px-4 py-2 rounded-md font-medium transition duration-200 ${
-                    isActive
-                      ? "bg-white text-[#009DDC] dark:bg-white dark:text-gray-800 shadow-lg"
-                      : "text-white hover:bg-white hover:text-[#009DDC] dark:hover:text-gray-800"
-                  }`
-                }
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl text-white hover:bg-white/20 cursor-pointer"
               >
-                Profile
-              </NavLink>
+                <i
+                  className={`fa-solid text-xl ${
+                    isDark ? "fa-sun text-yellow-400" : "fa-moon"
+                  }`}
+                ></i>
+              </button>
 
-              <span
-                onClick={handleSignOut}
-                className="text-lg px-4 py-2 cursor-pointer rounded-md font-medium text-white hover:bg-white hover:text-[#009DDC] dark:hover:text-gray-800 transition duration-200"
-              >
-                Sign Out
-              </span>
+              {userLogin ? (
+                <>
+                  <NavLink
+                    to="/profile"
+                    className={({ isActive }) =>
+                      `${navLink} ${isActive ? active : inactive}`
+                    }
+                  >
+                    Profile
+                  </NavLink>
 
-              <NavLink
-                to="/cart"
-                className={({ isActive }) =>
-                  `relative text-lg px-4 py-2 rounded-md font-medium transition duration-200 ${
-                    isActive
-                      ? "bg-white text-[#009DDC] dark:bg-white dark:text-gray-800 shadow-lg"
-                      : "text-white hover:bg-white hover:text-[#009DDC] dark:hover:text-gray-800"
-                  }`
-                }
-              >
-                <i className="fa-solid fa-cart-shopping"></i>
-                {itemsCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#009DDC] dark:border-gray-800 animate-bounce shadow-md">
-                    {itemsCount}
-                  </span>
-                )}
-              </NavLink>
-            </>
-          ) : (
-            <>
-              <NavLink
-                to="/login"
-                className="text-lg px-4 py-2 rounded-md font-medium text-white hover:bg-white hover:text-[#009DDC] dark:hover:text-gray-800 transition duration-200"
-              >
-                Login
-              </NavLink>
+                  <NavLink
+                    to="/cart"
+                    className="relative p-2 text-white hover:bg-white/20 rounded-xl cursor-pointer"
+                  >
+                    <i className="fa-solid fa-cart-shopping text-xl"></i>
+                    {itemsCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-xs flex items-center justify-center animate-bounce rounded-full">
+                        {itemsCount}
+                      </span>
+                    )}
+                  </NavLink>
 
-              <NavLink
-                to="/register"
-                className="text-lg px-4 py-2 rounded-md font-medium text-white hover:bg-white hover:text-[#009DDC] dark:hover:text-gray-800 transition duration-200"
+                  <button
+                    onClick={handleSignOut}
+                    className="px-5 py-2.5 rounded-xl text-base font-semibold text-white hover:bg-red-500/80 transition cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <NavLink to="/login" className={`${navLink} ${inactive}`}>
+                    Login
+                  </NavLink>
+                  <NavLink to="/register" className={`${navLink} ${inactive}`}>
+                    Register
+                  </NavLink>
+                </>
+              )}
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setOpen(!open)}
+                className="md:hidden p-2 text-white rounded-xl hover:bg-white/20 cursor-pointer"
               >
-                Register
-              </NavLink>
-            </>
+                <i className="fa-solid fa-bars text-xl"></i>
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Dropdown */}
+          {open && (
+            <div className="md:hidden pb-4 space-y-2">
+              {userLogin && (
+                <>
+                  <NavLink to="/" className={navLink + " " + inactive}>
+                    Home
+                  </NavLink>
+                  <NavLink to="/products" className={navLink + " " + inactive}>
+                    Products
+                  </NavLink>
+                </>
+              )}
+            </div>
           )}
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }
