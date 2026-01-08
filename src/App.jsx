@@ -12,12 +12,14 @@ import Notfound from "./components/Notfound/Notfound";
 import Map from "./components/Map/Map";
 import Home from "./components/Home/Home";
 import Profile from "./components/Profile/Profile";
+import Orders from "./components/Orders/Orders"; // ✅ Added Orders import
 import UserContextProvider from "./Context/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import CartContextProvider from "./Context/CartContext";
 import { Toaster } from "react-hot-toast";
 import ThemeContextProvider from "./Context/ThemeContext";
-const x = createBrowserRouter([
+
+const router = createBrowserRouter([
   {
     path: "",
     element: <Layout />,
@@ -64,6 +66,14 @@ const x = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "orders", // ✅ Orders route
+        element: (
+          <ProtectedRoute>
+            <Orders />
+          </ProtectedRoute>
+        ),
+      },
       { path: "*", element: <Notfound /> },
     ],
   },
@@ -76,7 +86,7 @@ function App() {
       <UserContextProvider>
         <ThemeContextProvider>
           <CartContextProvider>
-            <RouterProvider router={x}></RouterProvider>
+            <RouterProvider router={router} />
           </CartContextProvider>
         </ThemeContextProvider>
       </UserContextProvider>

@@ -59,12 +59,14 @@ export default function Login() {
       .then((res) => {
         if (res.data.message === "Success") {
           localStorage.setItem("userToken", res.data.data.token);
+          console.log(res);
           setuserLogin(res.data.data.token);
           navigate("/");
         }
       })
-      .catch(() => {
+      .catch((err) => {
         // setApiError("Incorrect Email or Password");
+        console.log(err);
         toast.error("Incorrect Email or Password");
       })
       .finally(() => setIsLoading(false));

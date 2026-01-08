@@ -163,6 +163,7 @@ export default function Products() {
       const res = await axios.get(
         `http://smartbracelet.runasp.net/api/Product/${id}`
       );
+      
       setSelectedProduct(res.data?.data);
     } catch {
       setSelectedProduct(products.find((p) => p.id === id));
@@ -177,6 +178,9 @@ export default function Products() {
     ])
       .then(([p, t]) => {
         setProducts(p.data?.data || []);
+        console.log('====================================');
+        console.log(p);
+        console.log('====================================');
         setFilteredProducts(p.data?.data || []);
         setTypes(t.data?.data || []);
       })
