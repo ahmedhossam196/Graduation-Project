@@ -77,7 +77,7 @@ const ProductDetailsModal = ({ product, closeModal, addToCart, addingId }) => {
   return (
     <div
       onClick={closeModal}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 cursor-pointer"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 cursor-pointer "
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -85,8 +85,9 @@ const ProductDetailsModal = ({ product, closeModal, addToCart, addingId }) => {
       >
         <button
           onClick={closeModal}
-          className="absolute top-3 right-4 text-3xl text-gray-500 cursor-pointer"
-        >
+className="absolute top-3 right-4 text-3xl text-gray-400 cursor-pointer 
+             transition-all duration-300 ease-in-out
+             hover:scale-125 hover:text-red-600 active:scale-95"        >
           &times;
         </button>
 
