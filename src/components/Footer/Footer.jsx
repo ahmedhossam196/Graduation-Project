@@ -242,7 +242,7 @@ export default function Footer() {
             <p className="text-[.625rem] font-normal text-white md:text-[.75rem]">
               © Copyright
               {/* */}2026
-              {/* */}, All Rights Reserved by YOUR WEBSITES. PVT. LTD
+              {/* */}, All Rights Reserved by LinkO smartCare. PVT. LTD
             </p>
           </div>
         </div>
