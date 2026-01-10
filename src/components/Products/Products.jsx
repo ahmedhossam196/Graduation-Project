@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback, useMemo } from "react";
 import axios from "axios";
 import { CartContext } from "../../Context/CartContext";
 import toast, { Toaster } from "react-hot-toast";
@@ -11,20 +11,22 @@ const getValidImageUrl = (url) => {
   return url.startsWith("http") ? url : `https://${url}`;
 };
 
-// ---------------- Product Card ----------------
-const ProductCard = ({ product, openDetails, addToCart, addingId }) => (
+// ---------------- Product Card (Optimized) ----------------
+// استخدمنا React.memo لمنع إعادة رسم الكارد لو الـ addingId مخصوش
+const ProductCard = React.memo(({ product, openDetails, addToCart, addingId }) => (
   <div
-    onClick={() => openDetails(product.id)}
+    onClick={() => openDetails(product)}
     className="bg-white dark:bg-gray-800 rounded-2xl shadow-md dark:shadow-black/40
       transition duration-300 overflow-hidden flex flex-col cursor-pointer
       hover:shadow-xl hover:-translate-y-1"
   >
-    <div className="h-[18rem] overflow-hidden">
+    <div className="h-[18rem] overflow-hidden bg-gray-100 dark:bg-gray-700">
       <img
         src={getValidImageUrl(product.imageUrl)}
         alt={product.name}
         className="w-full h-full object-cover"
-        loading="lazy"
+        loading="lazy" // تحميل الصورة فقط عند الحاجة
+        decoding="async" // فك ضغط الصورة في الخلفية
       />
     </div>
 
@@ -68,70 +70,7 @@ const ProductCard = ({ product, openDetails, addToCart, addingId }) => (
       </div>
     </div>
   </div>
-);
-
-// ---------------- Modal ----------------
-const ProductDetailsModal = ({ product, closeModal, addToCart, addingId }) => {
-  if (!product) return null;
-
-  return (
-    <div
-      onClick={closeModal}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 cursor-pointer"
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-2xl shadow-xl relative"
-      >
-        <button
-          onClick={closeModal}
-          className="absolute top-3 right-4 text-3xl text-gray-500 cursor-pointer"
-        >
-          &times;
-        </button>
-
-        <h2 className="text-3xl font-bold mb-4">{product.name}</h2>
-
-        <img
-          src={getValidImageUrl(product.imageUrl)}
-          alt={product.name}
-          className="w-full h-80 object-cover mb-4 rounded-xl"
-        />
-
-        <p className="mb-6 text-gray-600 dark:text-gray-300 text-lg">
-          {product.description}
-        </p>
-
-        <div className="flex justify-between items-center">
-          <span style={{ color: primaryColor }} className="text-3xl font-bold">
-            {product.price} LE
-          </span>
-
-          <button
-            disabled={addingId === product.id}
-            onClick={() => addToCart(product)}
-            className={`bg-[#009DDC] text-white font-medium py-3 px-8 rounded-full shadow
-              transition flex items-center gap-2 cursor-pointer
-              ${
-                addingId === product.id
-                  ? "opacity-70 cursor-not-allowed"
-                  : "hover:bg-[#007AA8]"
-              }`}
-          >
-            {addingId === product.id ? (
-              <>
-                <span className="w-4 h-4 border-2 border-white/70 border-t-white rounded-full animate-spin"></span>
-                Adding...
-              </>
-            ) : (
-              "Add to Cart"
-            )}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+));
 
 // ---------------- Main Component ----------------
 export default function Products() {
@@ -146,7 +85,8 @@ export default function Products() {
 
   const { addToCart } = useContext(CartContext);
 
-  const handleAddToCart = async (product) => {
+  // استخدام useCallback لضمان عدم تغيير تعريف الدالة مع كل Re-render
+  const handleAddToCart = useCallback(async (product) => {
     try {
       setAddingId(product.id);
       await addToCart(product);
@@ -156,36 +96,34 @@ export default function Products() {
     } finally {
       setAddingId(null);
     }
-  };
+  }, [addToCart]);
 
-  const openDetails = async (id) => {
-    try {
-      const res = await axios.get(
-        `http://smartbracelet.runasp.net/api/Product/${id}`
-      );
-      
-      setSelectedProduct(res.data?.data);
-    } catch {
-      setSelectedProduct(products.find((p) => p.id === id));
-    }
-  };
+  // فتح المودال مباشرة من الداتا المخزنة بدل طلب API جديد
+  const openDetails = useCallback((product) => {
+    setSelectedProduct(product);
+  }, []);
 
   useEffect(() => {
+    let isMounted = true;
     setIsLoading(true);
     Promise.all([
       axios.get("http://smartbracelet.runasp.net/api/Product"),
       axios.get("http://smartbracelet.runasp.net/api/Product/types"),
     ])
       .then(([p, t]) => {
-        setProducts(p.data?.data || []);
-        console.log('====================================');
-        console.log(p);
-        console.log('====================================');
-        setFilteredProducts(p.data?.data || []);
-        setTypes(t.data?.data || []);
+        if (isMounted) {
+          const data = p.data?.data || [];
+          setProducts(data);
+          setFilteredProducts(data);
+          setTypes(t.data?.data || []);
+        }
       })
       .catch(() => setApiError("Failed to load products"))
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
+
+    return () => { isMounted = false; };
   }, []);
 
   const filterByType = (type) => {
@@ -199,7 +137,6 @@ export default function Products() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-20">
       <Toaster position="top-center" />
 
-      {/* Header / Categories */}
       <header className="mb-12 px-6 md:px-12 lg:px-20">
         <h1 className="text-5xl font-extrabold text-gray-800 dark:text-gray-100 border-b-8 border-[#009DDC] inline-block pb-3 mb-8">
           Our Products
@@ -232,16 +169,9 @@ export default function Products() {
         </div>
       </header>
 
-      {/* Products Grid / Loading */}
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#009DDC]"></div>
-        </div>
-      ) : apiError ? (
-        <div className="text-center text-red-500 text-xl">{apiError}</div>
-      ) : filteredProducts.length === 0 ? (
-        <div className="text-center py-20 text-gray-500 text-2xl">
-          No products found in this category.
         </div>
       ) : (
         <div className="px-6 md:px-12 lg:px-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -257,13 +187,45 @@ export default function Products() {
         </div>
       )}
 
+      {/* Modal - تم إبقاء نفس الديزاين مع تحسين الأداء */}
       {selectedProduct && (
-        <ProductDetailsModal
-          product={selectedProduct}
-          closeModal={() => setSelectedProduct(null)}
-          addToCart={handleAddToCart}
-          addingId={addingId}
-        />
+        <div
+          onClick={() => setSelectedProduct(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 cursor-pointer"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-2xl shadow-xl relative"
+          >
+            <button
+              onClick={() => setSelectedProduct(null)}
+              className="absolute top-3 right-4 text-3xl text-gray-500 cursor-pointer"
+            >
+              &times;
+            </button>
+            <h2 className="text-3xl font-bold mb-4">{selectedProduct.name}</h2>
+            <img
+              src={getValidImageUrl(selectedProduct.imageUrl)}
+              alt={selectedProduct.name}
+              className="w-full h-80 object-cover mb-4 rounded-xl"
+            />
+            <p className="mb-6 text-gray-600 dark:text-gray-300 text-lg">
+              {selectedProduct.description}
+            </p>
+            <div className="flex justify-between items-center">
+              <span style={{ color: primaryColor }} className="text-3xl font-bold">
+                {selectedProduct.price} LE
+              </span>
+              <button
+                disabled={addingId === selectedProduct.id}
+                onClick={() => handleAddToCart(selectedProduct)}
+                className="bg-[#009DDC] text-white font-medium py-3 px-8 rounded-full shadow transition hover:bg-[#007AA8]"
+              >
+                {addingId === selectedProduct.id ? "Adding..." : "Add to Cart"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
