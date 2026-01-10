@@ -8,78 +8,55 @@ export default function CartContextProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState("");
 
-  // Function to build headers dynamically to ensure we always have the latest token
   const getHeaders = () => ({
     Authorization: `Bearer ${localStorage.getItem("userToken")}`,
   });
 
-  // 1. Get Logged user cart
-  // async function getCartItems() {
-  //   setIsLoading(true);
-  //   try {
-  //     const res = await axios.get("http://smartbracelet.runasp.net/api/basket", {
-  //       headers: getHeaders(),
-  //     });
-  //     setCartItems(res.data?.items || []);
-  //   } catch (error) {
-  //     if (error.response?.status === 404) {
-  //       setCartItems([]);
-  //     } else {
-  //       setApiError("Error fetching your cart.");
-  //     }
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }
   async function getCartItems() {
-  setIsLoading(true);
-  try {
-    const res = await axios.get("http://smartbracelet.runasp.net/api/basket", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` }
-    });
+    setIsLoading(true);
+    try {
+      const res = await axios.get("http://smartbracelet.runasp.net/api/basket", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` }
+      });
 
-    console.log("Full API Response:", res.data); 
-    
-    if (res.data && res.data.data) {
-      setCartItems(res.data.data.items || []);
-    } else {
-      setCartItems([]);
+      console.log("Full API Response:", res.data); 
+      
+      if (res.data && res.data.data) {
+        setCartItems(res.data.data.items || []);
+      } else {
+        setCartItems([]);
+      }
+    } catch (error) {
+      console.error("Fetch Cart Error:", error);
+      setCartItems([]); 
+    } finally {
+      setIsLoading(false);
     }
-
-  } catch (error) {
-    console.error("Fetch Cart Error:", error);
-    setCartItems([]); 
-  } finally {
-    setIsLoading(false);
   }
-}
 
-//   2. Add Product To Cart (/api/basket/items)
   async function addToCart(product) {
-  try {
-    const itemData = {
-      id: product.id,
-      productName: product.name, 
-      pictureUrl: product.imageUrl || product.image, 
-      price: product.price,
-      quantity: 1
-    };
+    try {
+      const itemData = {
+        id: product.id,
+        productName: product.name, 
+        pictureUrl: product.imageUrl || product.image, 
+        price: product.price,
+        quantity: 1
+      };
 
-    await axios.post(
-      "http://smartbracelet.runasp.net/api/basket/items",
-      itemData,
-      { headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` } }
-    );
-    
-    await getCartItems(); 
-    console.log("item added");
-  } catch (error) {
-    console.error("خطأ في الإضافة:", error.response?.data);
+      await axios.post(
+        "http://smartbracelet.runasp.net/api/basket/items",
+        itemData,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` } }
+      );
+      
+      await getCartItems(); 
+      console.log("item added");
+    } catch (error) {
+      console.error("Add to cart error:", error.response?.data);
+    }
   }
-}
 
-
-  // 3. Update product quantity (PUT)
   async function updateQuantity(id, newQuantity) {
     if (newQuantity < 1) return;
     try {
@@ -88,36 +65,33 @@ export default function CartContextProvider({ children }) {
         {},
         { headers: getHeaders() }
       );
-      // Optimistic UI update
+      
       setCartItems((prev) =>
         prev.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item))
       );
     } catch (error) {
-      getCartItems(); // Rollback if API fails
+      getCartItems(); 
     }
   }
 
-  // 4. Remove specific cart Item (DELETE)
   async function removeCartItem(id) {
     try {
       await axios.delete(`http://smartbracelet.runasp.net/api/basket/items/${id}`, {
         headers: getHeaders(),
       });
-      // Remove from UI immediately
       setCartItems((prev) => prev.filter((item) => item.id !== id));
     } catch (error) {
       console.error("Remove Item Error:", error);
     }
   }
 
-  // 5. Clear ALL user cart (/api/basket/clear)
   async function clearCart() {
     setIsLoading(true);
     try {
       await axios.delete("http://smartbracelet.runasp.net/api/basket/clear", {
         headers: getHeaders(),
       });
-      setCartItems([]); // Clear UI
+      setCartItems([]);
     } catch (error) {
       console.error("Clear Cart Error:", error);
     } finally {

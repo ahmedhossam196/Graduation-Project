@@ -12,7 +12,6 @@ export default function Register() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Validation Schema
   const schema = z.object({
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),
@@ -46,7 +45,6 @@ export default function Register() {
       ),
   });
 
-  // Form Hook
   const form = useForm({
     defaultValues: {
       firstName: "",
@@ -62,18 +60,6 @@ export default function Register() {
 
   const { register, handleSubmit, formState } = form;
 
-  // Dark Mode System Detection
-  useEffect(() => {
-    const checkDark = window.matchMedia("(prefers-color-scheme: dark)");
-    if (checkDark.matches) document.documentElement.classList.add("dark");
-
-    checkDark.addEventListener("change", (e) => {
-      if (e.matches) document.documentElement.classList.add("dark");
-      else document.documentElement.classList.remove("dark");
-    });
-  }, []);
-
-  // Submit Handler
   function handleRegister(data) {
     setIsLoading(true);
     setApiError("");
@@ -99,7 +85,6 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition p-6 flex justify-center items-center">
       <div className="max-w-4xl w-full bg-white dark:bg-gray-800 rounded-3xl p-10 transition">
-        {/* Logo & Title */}
         <div className="text-center mb-3">
           <Link to="/">
             <img src={Com} alt="logo" className="w-35 mx-auto" />
@@ -109,7 +94,6 @@ export default function Register() {
           </h4>
         </div>
 
-        {/* Success / Error Messages */}
         {apiSuccessed && (
           <p className="bg-green-500 text-white p-3 rounded-xl mb-4 text-center font-semibold">
             {apiSuccessed}
@@ -122,12 +106,10 @@ export default function Register() {
           </p>
         )}
 
-        {/* Form */}
         <form
           onSubmit={handleSubmit(handleRegister)}
           className="grid sm:grid-cols-2 gap-4"
         >
-          {/* First Name */}
           <div>
             <label className="block text-gray-700 dark:text-gray-300 mb-1">
               First Name
@@ -145,7 +127,6 @@ export default function Register() {
             )}
           </div>
 
-          {/* Last Name */}
           <div>
             <label className="block text-gray-700 dark:text-gray-300 mb-1">
               Last Name
@@ -163,7 +144,6 @@ export default function Register() {
             )}
           </div>
 
-          {/* Email */}
           <div>
             <label className="block text-gray-700 dark:text-gray-300 mb-1">
               Email
@@ -181,7 +161,6 @@ export default function Register() {
             )}
           </div>
 
-          {/* Phone */}
           <div>
             <label className="block text-gray-700 dark:text-gray-300 mb-1">
               Mobile Number
@@ -199,7 +178,6 @@ export default function Register() {
             )}
           </div>
 
-          {/* Password */}
           <div>
             <label className="block text-gray-700 dark:text-gray-300 mb-1">
               Password
@@ -217,7 +195,6 @@ export default function Register() {
             )}
           </div>
 
-          {/* Birthday */}
           <div>
             <label className="block text-gray-700 dark:text-gray-300 mb-1">
               Birthday
@@ -234,7 +211,6 @@ export default function Register() {
             )}
           </div>
 
-          {/* Gender */}
           <div className="sm:col-span-2">
             <label className="block text-gray-700 dark:text-gray-300 mb-1">
               Gender
@@ -254,7 +230,6 @@ export default function Register() {
             )}
           </div>
 
-          {/* Submit */}
           <div className="sm:col-span-2 mt-6 flex justify-center">
             <button
               type="submit"
