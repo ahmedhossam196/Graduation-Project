@@ -66,19 +66,19 @@ const ItemCard = ({ item }) => {
 };
 
 const OrderCard = ({ order, deliveryMethods }) => {
-  // FIX: Look for deliveryMethodId directly or inside deliveryMethod object
   const deliveryId = order.deliveryMethodId || order.deliveryMethod?.id;
-  
-  // Use String() to avoid "1" !== 1 type mismatches
   const matchedMethod = deliveryMethods.find(m => String(m.id) === String(deliveryId));
 
-  // Correct display based on your JSON data
   const deliveryDisplay = matchedMethod ? matchedMethod.deliveryTime : "1-2 Weeks";
   const deliveryCost = matchedMethod ? matchedMethod.price : 0;
 
-  // Correct Payment Label mapping
   const pMethod = order.paymentMethod || (order.address && order.address.paymentMethod);
-  const paymentLabel = (pMethod === 1 || pMethod === "1" || pMethod === "Cash") ? "Cash on Delivery" : "Visa / Card";
+  
+  const pMethodStr = String(pMethod).toLowerCase();
+  const isCash = pMethodStr === "1" || pMethodStr === "cash" || pMethodStr === "cod" || pMethod === 1;
+  
+  const paymentLabel = isCash ? "Cash on Delivery" : "Visa / Card";
+  // -------------------------------------------
 
   const orderItems = order.items || order.orderItems || [];
   const itemsTotal = orderItems.reduce((acc, item) => acc + (item.price * (item.qty || item.quantity || 1)), 0);
@@ -111,8 +111,12 @@ const OrderCard = ({ order, deliveryMethods }) => {
             <span className="px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold border border-blue-100 dark:border-blue-800">
               <i className="fa-solid fa-truck mr-1"></i> {deliveryDisplay}
             </span>
-            <span className="px-4 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-100 dark:border-emerald-800">
-              <i className="fa-solid fa-credit-card mr-1"></i> {paymentLabel}
+            <span className={`px-4 py-1.5 rounded-full text-xs font-bold border ${
+                isCash 
+                ? "bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-800"
+                : "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800"
+              }`}>
+              <i className={`fa-solid ${isCash ? 'fa-money-bill-wave' : 'fa-credit-card'} mr-1`}></i> {paymentLabel}
             </span>
           </div>
         </div>
@@ -168,13 +172,7 @@ export default function Orders() {
       const ordersData = ordersRes.data?.data || ordersRes.data || [];
       const methodsData = methodsRes.data?.data || methodsRes.data || [];
 
-      // DEBUGGING TABLE: Look at your browser console to see the IDs
-      console.log("--- Delivery Comparison Debug ---");
-      console.table(methodsData.map(m => ({ ID: m.id, Name: m.shortName, Price: m.price })));
-      console.log("Order Data Samples:", ordersData.slice(0, 2).map(o => ({ 
-        OrderID: o.id, 
-        DeliveryID: o.deliveryMethodId || o.deliveryMethod?.id 
-      })));
+         console.log("Raw Orders Data:", ordersData);
 
       const sorted = Array.isArray(ordersData) ? [...ordersData].sort((a, b) => {
         const dateA = new Date(a.orderdate || a.orderDate || a.createdAt);
@@ -233,9 +231,13 @@ export default function Orders() {
       </div>
 
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-        {displayedOrders.map((order) => (
-          <OrderCard key={order.id} order={order} deliveryMethods={deliveryMethods} />
-        ))}
+        {displayedOrders.length > 0 ? (
+          displayedOrders.map((order) => (
+            <OrderCard key={order.id} order={order} deliveryMethods={deliveryMethods} />
+          ))
+        ) : (
+          <div className="text-center py-20 text-gray-500">No orders found.</div>
+        )}
       </div>
     </div>
   );
