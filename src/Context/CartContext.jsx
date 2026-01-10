@@ -38,9 +38,6 @@ export default function CartContextProvider({ children }) {
       headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` }
     });
 
-    // بص هنا: السيرفر باعت الـ items جوه data جوه data ثانية
-    // حسب الـ Console اللي إنت بعته: res.data هو الـ object الكبير
-    // جواه داتا (data) جواها items
     console.log("Full API Response:", res.data); 
     
     if (res.data && res.data.data) {
@@ -51,7 +48,7 @@ export default function CartContextProvider({ children }) {
 
   } catch (error) {
     console.error("Fetch Cart Error:", error);
-    setCartItems([]); // لو حصل ايرور بنفضيها عشان الـ UI ميعلقش
+    setCartItems([]); 
   } finally {
     setIsLoading(false);
   }
@@ -62,8 +59,8 @@ export default function CartContextProvider({ children }) {
   try {
     const itemData = {
       id: product.id,
-      productName: product.name, // السيرفر عايزها productName
-      pictureUrl: product.imageUrl || product.image, // السيرفر عايزها pictureUrl
+      productName: product.name, 
+      pictureUrl: product.imageUrl || product.image, 
       price: product.price,
       quantity: 1
     };
@@ -74,7 +71,6 @@ export default function CartContextProvider({ children }) {
       { headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` } }
     );
     
-    // أهم خطوة: لازم تنادي دي عشان الـ UI يحس بالتغيير
     await getCartItems(); 
     console.log("item added");
   } catch (error) {
