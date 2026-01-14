@@ -141,15 +141,15 @@ export default function Cart() {
                       <h3 className="font-bold text-lg">{item.productName}</h3>
                       <p className="text-[#009DDC] font-semibold">{item.price} LE</p>
                       <div className="flex items-center gap-3 mt-3 bg-gray-100 dark:bg-gray-700 rounded-xl px-3 py-1 w-fit">
-                        <button onClick={() => item.quantity > 1 && updateQuantity(item.id, item.quantity - 1)} className="text-[#009DDC]"><i className="fa-solid fa-minus"></i></button>
+                        <button onClick={() => item.quantity > 1 && updateQuantity(item.id, item.quantity - 1)} className="text-[#009DDC] hover:text-blue-600"><i className="fa-solid fa-minus cursor-pointer"></i></button>
                         <span className="font-bold">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="text-[#009DDC]"><i className="fa-solid fa-plus"></i></button>
+                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="text-[#009DDC] hover:text-blue-600"><i className="fa-solid fa-plus cursor-pointer"></i></button>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-6">
                     <span className="font-bold text-xl">{(item.price * item.quantity).toFixed(2)} LE</span>
-                    <button onClick={() => removeCartItem(item.id)} className="text-red-500"><i className="fa-solid fa-trash-can"></i></button>
+                    <button onClick={() => removeCartItem(item.id)} className="text-red-500 hover:text-red-800"><i className="fa-solid fa-trash-can cursor-pointer"></i></button>
                   </div>
                 </article>
               ))}
@@ -163,12 +163,12 @@ export default function Cart() {
               </div>
               <p className="flex justify-between font-bold text-2xl mb-6">Total <span className="text-[#009DDC]">{finalTotal.toFixed(2)} LE</span></p>
               
-              <button onClick={() => setShowCheckout(true)} className="w-full bg-[#009DDC] text-white py-4 rounded-2xl font-bold mb-3">Checkout Now</button>
+              <button onClick={() => setShowCheckout(true)} className="w-full bg-[#009DDC] hover:bg-blue-500 text-white py-4 rounded-2xl font-bold mb-3 cursor-pointer">Checkout Now</button>
               
               {/* RESTORED CLEAR CART BUTTON */}
               <button 
                 onClick={() => { if(window.confirm("Clear all items?")) clearCart(); }}
-                className="w-full border border-red-300 text-red-600 hover:bg-red-50 py-3 rounded-xl transition font-medium"
+                className="w-full border border-red-300 text-red-600 hover:bg-red-50 py-3 rounded-xl transition font-medium cursor-pointer"
               >
                 Clear Cart
               </button>
@@ -203,7 +203,7 @@ export default function Cart() {
                 <option value={2}>Visa Card</option>
               </select>
 
-              <button type="submit" disabled={loading} className="w-full bg-[#009DDC] text-white py-3 rounded-xl font-bold">
+              <button type="submit" disabled={loading} className="w-full bg-[#009DDC] text-white py-3 rounded-xl font-bold cursor-pointer">
                 {loading ? "Processing..." : `Pay ${finalTotal.toFixed(2)} LE`}
               </button>
             </form>

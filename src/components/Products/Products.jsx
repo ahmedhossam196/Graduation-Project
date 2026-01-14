@@ -31,7 +31,7 @@ const ProductCard = React.memo(({ product, openDetails, addToCart, addingId }) =
     </div>
 
     <div className="p-5 flex flex-col flex-grow">
-      <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3 line-clamp-1">
+      <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">
         {product.name}
       </h3>
 
@@ -138,9 +138,18 @@ export default function Products() {
       <Toaster position="top-center" />
 
       <header className="mb-12 px-6 md:px-12 lg:px-20">
-        <h1 className="text-5xl font-extrabold text-gray-800 dark:text-gray-100 border-b-8 border-[#009DDC] inline-block pb-3 mb-8">
-          Our Products
-        </h1>
+       <div className="relative group cursor-default text-left mb-8">
+  <h1 className="text-5xl font-extrabold text-gray-800 dark:text-gray-100 tracking-tight">
+    Our <span className="text-[#009DDC]">Products</span>
+  </h1>
+  {/* Animated underline like My Orders */}
+  <div className="h-1.5 w-20 mt-2 rounded-full bg-gradient-to-r from-[#009DDC] to-[#00D2FF] shadow-[0_2px_10px_rgba(0,157,220,0.3)] transition-all duration-500 group-hover:w-72"></div>
+  {/* Subtext */}
+  <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mt-3">
+    Browse our collection
+  </p>
+</div>
+
 
         <div className="flex flex-wrap gap-3 mt-4">
           <button
@@ -199,7 +208,7 @@ export default function Products() {
           >
             <button
               onClick={() => setSelectedProduct(null)}
-              className="absolute top-3 right-4 text-3xl text-gray-500 cursor-pointer"
+              className="absolute top-3 right-4 text-3xl text-gray-500 cursor-pointer hover:text-red-700  "
             >
               &times;
             </button>

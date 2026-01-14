@@ -210,6 +210,8 @@ export default function Profile() {
                   ))}
                 </div>
 
+                {/* Address Section (Commented Out) */}
+                {/*
                 <div className="mt-10 pt-8 border-t border-gray-100 dark:border-gray-800">
                   <label className="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1 mb-4 block">
                     Registered Address
@@ -219,6 +221,7 @@ export default function Profile() {
                     {address}
                   </div>
                 </div>
+                */}
 
                 {isEditing && (
                   <motion.button
