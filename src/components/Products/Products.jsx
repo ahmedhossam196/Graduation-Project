@@ -228,7 +228,7 @@ export default function Products() {
               <button
                 disabled={addingId === selectedProduct.id}
                 onClick={() => handleAddToCart(selectedProduct)}
-                className="bg-[#009DDC] text-white font-medium py-3 px-8 rounded-full shadow transition hover:bg-[#007AA8]"
+                className="bg-[#009DDC] text-white font-medium py-3 px-8 rounded-full shadow transition cursor-pointer hover:bg-[#007AA8]"
               >
                 {addingId === selectedProduct.id ? "Adding..." : "Add to Cart"}
               </button>
