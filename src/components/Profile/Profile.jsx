@@ -39,7 +39,7 @@ export default function Profile() {
     if (savedAddress) setAddress(savedAddress);
 
     axios
-      .get("http://smartbracelet.runasp.net/api/auth/CurrentUser", {
+      .get("/api/auth/CurrentUser", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -50,7 +50,7 @@ export default function Profile() {
       .finally(() => setIsLoading(false));
 
     axios
-      .get("http://smartbracelet.runasp.net/api/address", {
+      .get("/api/address", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -88,7 +88,7 @@ export default function Profile() {
     const token = localStorage.getItem("userToken");
     setIsLoading(true);
     axios
-      .post("http://smartbracelet.runasp.net/api/auth/updateUser", userData, {
+      .post("/api/auth/updateUser", userData, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => {

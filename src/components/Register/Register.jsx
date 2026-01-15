@@ -66,7 +66,7 @@ export default function Register() {
     setApiSuccessed("");
 
     axios
-      .post("http://smartbracelet.runasp.net/api/auth/signup", data)
+      .post("/api/auth/signup", data)
       .then((res) => {
         if (res.data.message === "Success") {
           setApiSuccessed("Account created successfully ✔");

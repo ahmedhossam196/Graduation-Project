@@ -12,7 +12,6 @@ const getValidImageUrl = (url) => {
 };
 
 // ---------------- Product Card (Optimized) ----------------
-// استخدمنا React.memo لمنع إعادة رسم الكارد لو الـ addingId مخصوش
 const ProductCard = React.memo(({ product, openDetails, addToCart, addingId }) => (
   <div
     onClick={() => openDetails(product)}
@@ -25,8 +24,8 @@ const ProductCard = React.memo(({ product, openDetails, addToCart, addingId }) =
         src={getValidImageUrl(product.imageUrl)}
         alt={product.name}
         className="w-full h-full object-cover"
-        loading="lazy" // تحميل الصورة فقط عند الحاجة
-        decoding="async" // فك ضغط الصورة في الخلفية
+        loading="lazy"     
+        decoding="async" 
       />
     </div>
 
@@ -85,7 +84,6 @@ export default function Products() {
 
   const { addToCart } = useContext(CartContext);
 
-  // استخدام useCallback لضمان عدم تغيير تعريف الدالة مع كل Re-render
   const handleAddToCart = useCallback(async (product) => {
     try {
       setAddingId(product.id);
@@ -98,7 +96,6 @@ export default function Products() {
     }
   }, [addToCart]);
 
-  // فتح المودال مباشرة من الداتا المخزنة بدل طلب API جديد
   const openDetails = useCallback((product) => {
     setSelectedProduct(product);
   }, []);
@@ -107,8 +104,8 @@ export default function Products() {
     let isMounted = true;
     setIsLoading(true);
     Promise.all([
-      axios.get("http://smartbracelet.runasp.net/api/Product"),
-      axios.get("http://smartbracelet.runasp.net/api/Product/types"),
+      axios.get("/api/Product"),
+      axios.get("/api/Product/types"),
     ])
       .then(([p, t]) => {
         if (isMounted) {
@@ -196,7 +193,7 @@ export default function Products() {
         </div>
       )}
 
-      {/* Modal - تم إبقاء نفس الديزاين مع تحسين الأداء */}
+      {/* Modal */}
       {selectedProduct && (
         <div
           onClick={() => setSelectedProduct(null)}

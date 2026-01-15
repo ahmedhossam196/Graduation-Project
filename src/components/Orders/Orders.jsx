@@ -250,10 +250,10 @@ export default function Orders() {
     try {
       setLoading(true);
       const [ordersRes, methodsRes] = await Promise.all([
-        axios.get("http://smartbracelet.runasp.net/api/order", {
+        axios.get("/api/order", {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://smartbracelet.runasp.net/api/order/DeliveryMethods", {
+        axios.get("/api/order/DeliveryMethods", {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);

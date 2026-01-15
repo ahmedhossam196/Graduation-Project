@@ -46,7 +46,7 @@ export default function Cart() {
     try {
       setLoadingMethods(true);
       const token = localStorage.getItem("userToken");
-      const res = await axios.get("http://smartbracelet.runasp.net/api/order/DeliveryMethods", {
+      const res = await axios.get("/api/order/DeliveryMethods", {
         headers: { Authorization: `Bearer ${token}` },
       });
       
@@ -100,7 +100,7 @@ export default function Cart() {
 
     try {
       setLoading(true);
-      const res = await axios.post("http://smartbracelet.runasp.net/api/order", orderData, {
+      const res = await axios.post("/api/order", orderData, {
           headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` },
       });
       if (res.status === 200 || res.status === 201) {

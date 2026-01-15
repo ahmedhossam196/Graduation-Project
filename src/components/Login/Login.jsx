@@ -55,7 +55,7 @@ export default function Login() {
     setApiError("");
 
     axios
-      .post("http://smartbracelet.runasp.net/api/auth/login", data)
+      .post("/api/auth/login", data)
       .then((res) => {
         if (res.data.message === "Success") {
           localStorage.setItem("userToken", res.data.data.token);

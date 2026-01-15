@@ -15,7 +15,7 @@ export default function CartContextProvider({ children }) {
   async function getCartItems() {
     setIsLoading(true);
     try {
-      const res = await axios.get("http://smartbracelet.runasp.net/api/basket", {
+      const res = await axios.get("/api/basket", {
         headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` }
       });
 
@@ -45,7 +45,7 @@ export default function CartContextProvider({ children }) {
       };
 
       await axios.post(
-        "http://smartbracelet.runasp.net/api/basket/items",
+        "/api/basket/items",
         itemData,
         { headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` } }
       );
@@ -61,7 +61,7 @@ export default function CartContextProvider({ children }) {
     if (newQuantity < 1) return;
     try {
       await axios.put(
-        `http://smartbracelet.runasp.net/api/basket/items/${id}?quantity=${newQuantity}`,
+        `/api/basket/items/${id}?quantity=${newQuantity}`,
         {},
         { headers: getHeaders() }
       );
@@ -76,7 +76,7 @@ export default function CartContextProvider({ children }) {
 
   async function removeCartItem(id) {
     try {
-      await axios.delete(`http://smartbracelet.runasp.net/api/basket/items/${id}`, {
+      await axios.delete(`/api/basket/items/${id}`, {
         headers: getHeaders(),
       });
       setCartItems((prev) => prev.filter((item) => item.id !== id));
@@ -88,7 +88,7 @@ export default function CartContextProvider({ children }) {
   async function clearCart() {
     setIsLoading(true);
     try {
-      await axios.delete("http://smartbracelet.runasp.net/api/basket/clear", {
+      await axios.delete("/api/basket/clear", {
         headers: getHeaders(),
       });
       setCartItems([]);
