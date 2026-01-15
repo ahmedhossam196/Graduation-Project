@@ -9,10 +9,9 @@ import Register from "./components/Register/Register";
 import Products from "./components/Products/Products";
 import Cart from "./components/Cart/Cart";
 import Notfound from "./components/Notfound/Notfound";
-import Map from "./components/Map/Map";
 import Home from "./components/Home/Home";
 import Profile from "./components/Profile/Profile";
-import Orders from "./components/Orders/Orders"; // ✅ Added Orders import
+import Orders from "./components/Orders/Orders"; 
 import UserContextProvider from "./Context/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import CartContextProvider from "./Context/CartContext";
@@ -67,7 +66,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "orders", // ✅ Orders route
+        path: "orders", 
         element: (
           <ProtectedRoute>
             <Orders />
