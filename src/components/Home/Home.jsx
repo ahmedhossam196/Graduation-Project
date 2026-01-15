@@ -4,7 +4,7 @@ import { BellRing, MapPin, Activity, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import braceletImg from "../../assets/bracelet-mockup.png";
 import medicationImg from "../../assets/medication.png";
-import locationImg from "../../assets/location.png";
+import locationImg from "../../assets/Location.png";
 import fallDetectionImg from "../../assets/Detect.png";
 
 const fadeUp = {
